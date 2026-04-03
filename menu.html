@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực Đơn - Hoả Ngư Quán</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <style>
+        /* ── PAGE SPECIFIC ── */
+        .page-hero {
+            position: relative;
+            height: 42vh; min-height: 320px;
+            display: flex; align-items: flex-end; justify-content: center;
+            text-align: center;
+            background-image:
+                linear-gradient(to bottom, rgba(12,11,9,0.2) 0%, rgba(12,11,9,0.85) 80%, var(--bg) 100%),
+                url('/images/menu-hero.jpg');
+            background-size: cover;
+            background-position: center;
+            padding-bottom: 3.5rem;
+        }
+        .page-hero-content { position: relative; z-index: 1; }
+        .page-hero-tag {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--border2);
+            padding: 0.35rem 1.1rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+        .page-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            color: var(--text);
+        }
+        .page-hero h1 em { color: var(--gold); font-style: italic; }
+        .page-hero p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+        .filter-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+        .filter-btn {
+            padding: 0.45rem 1rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 2px;
+            cursor: pointer;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+        .filter-btn.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+
+        /* ── MENU SECTION ── */
+        .menu-section { padding: 5rem 0 6rem; }
+
+        .category-block { margin-bottom: 5rem; }
+        .category-block:last-child { margin-bottom: 0; }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .category-header-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        .category-title-wrap { text-align: center; }
+        .category-num {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.25em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .category-title em { color: var(--gold); font-style: italic; }
+
+        /* ── ENHANCED MENU GRID ── */
+        .menu-grid-enhanced {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .menu-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(.22,1,.36,1),
+                        border-color 0.3s, box-shadow 0.35s;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border2);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(232,184,75,0.1);
+        }
+        .menu-card-img {
+            position: relative;
+            overflow: hidden;
+            height: 210px;
+            flex-shrink: 0;
+        }
+        .menu-card-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.55s ease;
+        }
+        .menu-card:hover .menu-card-img img { transform: scale(1.07); }
+        .menu-card-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(12,11,9,0.65) 0%, transparent 55%);
+        }
+        .menu-card-badge {
+            position: absolute;
+            top: 0.85rem; left: 0.85rem;
+            z-index: 2;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.65rem;
+            border-radius: 2px;
+        }
+        .badge-hot { background: rgba(224,82,82,0.85); color: #fff; }
+        .badge-new { background: rgba(92,184,122,0.85); color: #fff; }
+        .badge-special { background: rgba(232,184,75,0.85); color: #0c0b09; }
+
+        .menu-card-body {
+            padding: 1.4rem 1.5rem 1.6rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-card-body h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+            line-height: 1.2;
+        }
+        .menu-card-body p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            flex: 1;
+            margin-bottom: 1.25rem;
+        }
+        .menu-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .menu-price {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .menu-price small {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            display: block;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── FEATURED CARD (wide) ── */
+        .menu-card.featured {
+            grid-column: span 2;
+            flex-direction: row;
+        }
+        .menu-card.featured .menu-card-img {
+            width: 48%;
+            height: auto;
+            flex-shrink: 0;
+        }
+        @media (max-width: 700px) {
+            .menu-card.featured { grid-column: span 1; flex-direction: column; }
+            .menu-card.featured .menu-card-img { width: 100%; height: 210px; }
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── ORDER MODAL OVERRIDE ── */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            padding: 2.5rem 2rem;
+            width: 100%; max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+        .close {
+            position: absolute; top: 1.25rem; right: 1.25rem;
+            font-size: 1.4rem; color: var(--text-muted); cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close:hover { color: var(--gold); }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus { outline: none; border-color: var(--gold); }
+        .order-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+        .order-type {
+            padding: 0.9rem; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-muted);
+            border-radius: 2px; cursor: pointer;
+            text-align: center; font-size: 0.85rem; transition: all 0.2s;
+        }
+        .order-type:hover { border-color: var(--border2); color: var(--text); }
+        .order-type.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+        .total-section {
+            margin-top: 1rem; padding: 1rem 1.25rem;
+            background: var(--gold-dim); border: 1px solid var(--border2);
+            border-radius: 2px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .total-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+        .total-value { font-family: 'DM Mono', monospace; font-size: 1.15rem; color: var(--gold); font-weight: 500; }
+        .payment-methods { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+        .payment-btn {
+            flex: 1; padding: 0.6rem; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-muted);
+            border-radius: 2px; cursor: pointer;
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            letter-spacing: 0.08em; transition: all 0.2s; text-align: center;
+        }
+        .payment-btn:hover { border-color: var(--border2); color: var(--text); }
+        .payment-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+        .delivery-info {
+            display: none; background: var(--bg);
+            border: 1px solid var(--border); padding: 1.25rem;
+            border-radius: 2px; margin-bottom: 1rem;
+        }
+        .delivery-info h3 {
+            font-size: 0.7rem; font-family: 'DM Mono', monospace;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" style="text-decoration:none;">
+                    <div class="logo">HOẢ <span>NGƯ </span>QUÁN</div>
+                </a>
+                <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="menu.html" style="color: var(--gold);">MENU</a></li>
+                        <li><a href="drinks.html">DRINKS</a></li>
+                        <li><a href="/index.html">ABOUT</a></li>
+                    </ul>
+                </nav>
+                <div class="contact-info">
+                    <a href="#">📞 0388 611 883</a >
+                    <a href="https://www.facebook.com/profile.php?id=61582296692992">📘 Facebook</a>
+                    <a href="https://zalo.me/0388611883">📱 Zalo</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-tag">Hoả Ngư Quán</div>
+            <h1>Thực Đơn<br><em>Đặc Sản</em></h1>
+            <p>Tươi từ biển — Thơm đến bàn</p>
+        </div>
+    </section>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-inner">
+                <span class="filter-label">Lọc:</span>
+                <button class="filter-btn active" onclick="filterMenu('all', this)">Tất Cả</button>
+                <button class="filter-btn" onclick="filterMenu('fish', this)">Cá Lăng</button>
+                <button class="filter-btn" onclick="filterMenu('fish2', this)">Cá Tầm</button>
+                <button class="filter-btn" onclick="filterMenu('fish3', this)">Cá Quả</button>
+                <button class="filter-btn" onclick="filterMenu('fish4', this)">Cá Chép</button>
+                <button class="filter-btn" onclick="filterMenu('fish5', this)">Gỏi Cá Các Loại</button>
+                <button class="filter-btn" onclick="filterMenu('seafood', this)">Hải Sản</button>
+                <button class="filter-btn" onclick="filterMenu('chicken', this)">Gà</button>
+                <button class="filter-btn" onclick="filterMenu('beef', this)">Bò</button>
+                <button class="filter-btn" onclick="filterMenu('pork', this)">Lão Trư</button>
+                <button class="filter-btn" onclick="filterMenu('salad', this)">Salad</button>
+                <button class="filter-btn" onclick="filterMenu('duck', this)">Vịt &amp; Ngan</button>
+                <button class="filter-btn" onclick="filterMenu('fish6', this)">Cá Hồi &amp; Cá Mú</button>
+                <button class="filter-btn" onclick="filterMenu('soup', this)">Lẩu &amp; Om</button>
+                <button class="filter-btn" onclick="filterMenu('BBQ', this)">Hấp &amp; Nướng</button>
+                <button class="filter-btn" onclick="filterMenu('hot', this)">🔥 Món Hot</button>
+                <button class="filter-btn" onclick="filterMenu('combo', this)">Combo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Content -->
+    <main class="menu-section">
+        <div class="container">
+
+            <!-- Category: Món Cá Lăng Đặc Sắc -->
+            <div class="category-block" data-category="fish" id="cat-fish">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">01 — Món Cá Lăng</div>
+                        <div class="category-title">Cá Lăng <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Cá Tầm Đặc Sắc -->
+            <div class="category-block" data-category="fish2" id="cat-fish2">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">02 — Món Cá Tầm</div>
+                        <div class="category-title">Cá Tầm <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish2">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Cá Quả Đặc Sắc -->
+            <div class="category-block" data-category="fish3" id="cat-fish3">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">03 — Món Cá Quả</div>
+                        <div class="category-title">Cá Quả <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish3">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Cá Chép Đặc Sắc -->
+            <div class="category-block" data-category="fish4" id="cat-fish4">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">04 — Món Cá Chép</div>
+                        <div class="category-title">Cá Chép <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish4">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Gỏi Cá Đặc Sắc -->
+            <div class="category-block" data-category="fish5" id="cat-fish5">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">05 — Món Gỏi Cá</div>
+                        <div class="category-title">Gỏi Cá <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish5">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Hải Sản -->
+            <div class="category-block" data-category="seafood" id="cat-seafood">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">06 — Hải Sản</div>
+                        <div class="category-title">Hải Sản <em>Tươi Sống</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-seafood">
+                </div>
+            </div>
+
+            <!-- Category: Món Gà Đặc Sắc -->
+            <div class="category-block" data-category="chicken" id="cat-chicken">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">07 — Món Gà</div>
+                        <div class="category-title">Gà <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-chicken">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Bò Đặc Sắc -->
+            <div class="category-block" data-category="beef" id="cat-beef">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">08 — Món Bò</div>
+                        <div class="category-title">Bò <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-beef">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Lão Trư Đặc Sắc -->
+            <div class="category-block" data-category="pork" id="cat-pork">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">09 — Món Lão Trư</div>
+                        <div class="category-title">Lão Trư <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-pork">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Salad Đặc Sắc -->
+            <div class="category-block" data-category="salad" id="cat-salad">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">10 — Món Salad</div>
+                        <div class="category-title">Salad <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-salad">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Vịt & Ngan Đặc Sắc -->
+            <div class="category-block" data-category="duck" id="cat-duck">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">11 — Món Vịt & Ngan</div>
+                        <div class="category-title">Vịt & Ngan <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-duck">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Món Cá Hồi & Cá Mú Đặc Sắc -->
+            <div class="category-block" data-category="fish6" id="cat-fish6">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">12 — Món Cá Hồi & Cá Mú</div>
+                        <div class="category-title">Cá Hồi & Cá Mú <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-fish6">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+            <!-- Category: Lẩu & Om -->
+            <div class="category-block" data-category="soup" id="cat-soup">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">13 — Lẩu & Om</div>
+                        <div class="category-title">Lẩu <em>&amp; Om</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-soup">
+                </div>
+            </div>
+
+            <!-- Category: Hấp & Nướng -->
+            <div class="category-block" data-category="BBQ" id="cat-BBQ">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">14 — Hấp & Nướng</div>
+                        <div class="category-title">Hấp <em>&amp; Nướng</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-BBQ">
+                </div>
+            </div>
+
+            <!-- Category: Combo Đặc Sắc -->
+            <div class="category-block" data-category="combo" id="cat-combo">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">15 — Combo Đặc Sắc</div>
+                        <div class="category-title">Combo <em>Đặc Sắc</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="menu-grid-enhanced" id="grid-combo">
+                    <!-- JS rendered -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <!-- Floating Cart Button -->
+<a href="order.html" id="cartFab"
+   style="display:none;
+          position:fixed;
+          bottom:2rem; right:2rem;
+          z-index:500;
+          background:var(--gold);
+          color:#0c0b09;
+          border-radius:4px;
+          padding:0.85rem 1.4rem;
+          text-decoration:none;
+          font-family:'DM Mono',monospace;
+          font-size:0.72rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          box-shadow:0 8px 32px rgba(0,0,0,0.5);
+          align-items:center;
+          gap:1rem;
+          transition:transform 0.2s, box-shadow 0.2s;"
+   onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.6)'"
+   onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.5)'">
+    <span style="font-size:1.1rem;">🛒</span>
+    <span>
+        <span id="cartFabCount" style="font-weight:600;">0 món</span><br>
+        <span id="cartFabPrice" style="color:rgba(12,11,9,0.7);font-size:0.65rem;">0 ₫</span>
+    </span>
+    <span style="font-size:0.68rem;opacity:0.7;">→ Đặt Hàng</span>
+</a>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2 id="orderItemTitle">Đặt Món</h2>
+
+            <div class="payment-methods">
+                <div class="payment-btn active" onclick="selectPayment('visa', this)">VISA</div>
+                <div class="payment-btn" onclick="selectPayment('atm', this)">ATM</div>
+                <div class="payment-btn" onclick="selectPayment('momo', this)">MOMO</div>
+            </div>
+
+            <div class="order-options">
+                <div class="order-type selected" onclick="selectOrderType('dinein', this)">Tại Bàn</div>
+                <div class="order-type" onclick="selectOrderType('takeout', this)">Mang Về</div>
+            </div>
+
+            <div id="dineinOptions">
+                <div class="form-group">
+                    <label>Chọn Vị Trí Bàn</label>
+                    <select id="tableLocation">
+                        <option>Tầng 1 — Nhìn Ra Cửa Sổ</option>
+                        <option>Tầng 1 — Khu Trung Tâm</option>
+                        <option>Tầng 2 — Ban Công</option>
+                        <option>Phòng VIP</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="takeoutOptions" class="delivery-info">
+                <h3>Thông Tin Giao Hàng</h3>
+                <div class="form-group">
+                    <label>Địa Chỉ Giao Hàng</label>
+                    <input type="text" id="deliveryAddress" placeholder="Nhập địa chỉ...">
+                </div>
+                <div class="form-group">
+                    <label>Số Điện Thoại</label>
+                    <input type="tel" id="deliveryPhone" placeholder="Nhập SĐT...">
+                </div>
+                <div class="form-group">
+                    <label>Thời Gian Giao</label>
+                    <input type="datetime-local" id="deliveryTime">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Số Lượng</label>
+                <input type="number" id="quantity" min="1" value="1" onchange="updateTotal()">
+            </div>
+
+            <div class="form-group">
+                <label>Đơn Giá: <span id="unitPrice" style="color:var(--gold);"></span></label>
+            </div>
+
+            <div class="total-section">
+                <span class="total-label">Tổng Cộng</span>
+                <span class="total-value" id="totalAmount">0 ₫</span>
+            </div>
+
+            <button class="btn" style="width:100%;margin-top:1.25rem;" onclick="placeOrder()">Đặt Ngay</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Hoả Ngư Quán</h3>
+                    <p>📍 Đường Trung Sơn Trầm, Phường Tùng Thiện, Sơn Tây, Hà Nội</p>
+                    <p>📞 Phone: 0388 611 883</p>
+                    <p>🕒 Mở cửa: 09:00 AM - 10:00 PM</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Liên Hệ</h3>
+                    <p>Chủ quán: Anh Hiếu - 0388 611 883</p>
+                    <p>Quản lý: Chị Nga - 0123 456 787</p>
+                    <p>📘 Facebook: /hoanguquan</p>
+                    <p>📱 Zalo: 0388611883</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Vị Trí</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2902.8203483249417!2d105.49648662138583!3d21.100072914864064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345f0f44eba78d%3A0x69415b62606a2657!2zSOG7j2EgTmfGsCBRdcOhbg!5e1!3m2!1svi!2s!4v1774167637768!5m2!1svi!2s" width="370" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">© 2025 Hoả Ngư Quán — Tươi từ cá, thơm đến bàn - Design by BachDX</div>
+        </div>
+    </footer>
+
+    <script>
+        // ── DATA ──
+        const menuData = {
+            fish: [
+                {
+                    id: 1, name: 'Cá Lăng cuộn lá lốt nướng', badge: null,
+                    desc: 'Cá tươi cuộn lá lốt nướng than hoa ăn cùng nước chấm tỏi ớt.',
+                    price: 169000, unit: '1 phần',
+                    img: '/images/canuongbowchanh.jpg', 
+                },
+                {
+                    id: 2, name: 'Cá Lăng xào lăn', badge: null,
+                    desc: 'Cá tươi cắt miếng vừa ăn xào chung vs rau củ quả tươi nhập hàng ngày.',
+                    price: 129000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 3, name: 'Cá Lăng sốt bơ tỏi', badge: 'special',
+                    desc: 'Cá tươi chiên ròn rồi dùng sốt bơ tỏi đặc biệt của Hoả Ngư Quán.',
+                    price: 159000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 4, name: 'Cá Lăng chiên mắm tỏi', badge: null,
+                    desc: 'Cá lăng chiên được tẩm sốt đậm đà thơm mùi tỏi đậm mùi mắm.',
+                    price: 159000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 5, name: 'Chả cá Lã Vọng', badge: 'hot',
+                    desc: 'Cá Lăng thơm ngon được kết hợp với hành tỏi lòng,... được xào lên ăn cùng bún chấm mắm tôm độc quyền của Hỏa Ngư Quán.',
+                    price: 279000, unit: '1 suất',
+                    img: '/api/placeholder/300/210', featured: true 
+                },
+                {
+                    id: 7, name: 'Cá Lăng rang muối', badge: 'hot',
+                    desc: 'Cá Lăng rang muối thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 219000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 6, name: 'Nộm cá hành tím', badge: null,
+                    desc: ' Bụng cá được cắt miếng vừa ăn đc nấu chín rồi trộn với hành tím và nước sốt',
+                    price: 179000, unit: '1 đĩa',
+                    img: ''
+                },
+                {
+                    id: 8, name: 'Cá Lăng Nướng', badge: 'special',
+                    desc: 'Cá Lăng nướng than hoa, ăn kèm rau sống và bánh tráng.',
+                    price: 329000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            fish2: [
+                {
+                    id: 9, name: 'Cá Tầm sốt bơ tỏi', badge: 'special',
+                    desc: 'Cá Tầm sốt bơ tỏi đặc biệt của Hoả Ngư Quán.',
+                    price: 239000, unit: '1 đĩa',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+                {
+                    id: 10, name: 'Cá Tầm sốt tiêu xanh', badge: null,
+                    desc: 'Cá tầm chiên vàng ròn đều được phết lên một lớp sốt tiêu xanh.',
+                    price: 239000, unit: '1 suất',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 11, name: 'Cá Tầm nộm', badge: null,
+                    desc: 'Cá Tầm được chế biến theo phong cách nộm, thơm ngon và hấp dẫn.',
+                    price: 179000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 12, name: 'Đầu cá Tầm nấu canh chua', badge: null,
+                    desc: 'Đầu cá Tầm nấu với nước canh chua ngọt, thơm nồng.',
+                    price: 319000, unit: '1 bát',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 13, name: 'Cá tầm hấp', badge: 'new',
+                    desc: 'Cá tầm hấp theo lối truyền thống, thơm nồng và giữ được độ tươi ngon.',
+                    price: 350000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 14, name: 'Cá Tầm rang muối', badge: 'hot',
+                    desc: 'Cá Tầm rang muối thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 15, name: 'Cá Tầm nướng', badge: 'hot',
+                    desc: 'Cá Tầm nướng than hoa, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+            ],
+            fish3: [
+                {
+                    id: 16, name: 'Cá Quả cuộn lá lốt', badge: null,
+                    desc: 'Cá tươi cuộn lá lốt nướng than hoa.',
+                    price: 169000, unit: '1 đĩa',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+                {
+                    id: 17, name: 'Cá Quả trộn xoài cay', badge: 'new',
+                    desc: 'Cá Quả được trộn với xoài xanh chua chua ngọt ngọt của nước sốt.',
+                    price: 279000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 18, name: 'Cá Quả chiên xù', badge: 'special',
+                    desc: 'Cá chiên vàng ươm ăn với rau sống đồ cuốn đa dạng.',
+                    price: 249000, unit: '1 con',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 19, name: 'Đầu Cá Quả nấu canh chua', badge: null,
+                    desc: 'Đầu cá quả nấu với nước canh chua ngọt, thơm nồng.',
+                    price: 129000, unit: '1 bát',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 20, name: 'Cá Quả hấp', badge: 'new',
+                    desc: 'Cá Quả hấp theo lối truyền thống, thơm nồng và giữ được độ tươi ngon.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 21, name: 'Cá Quả chiên ròn', badge: 'hot',
+                    desc: 'Cá Quả chiên ròn thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 22, name: 'Cá Quả nướng', badge: 'hot',
+                    desc: 'Cá Quả nướng than hoa, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 23, name: 'Cá Quả rang muối', badge: 'special',
+                    desc: 'Cá Quả rang muối đặc biệt của Hoả Ngư Quán.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            fish4: [
+                {
+                    id: 24, name: 'Cá Cá chép ròn xào nấm', badge: 'special',
+                    desc: 'Cá chép ròn đc cắt miếc vừa ăn xào với đa dạng loại nấm.',
+                    price: 169000, unit: '1 suất',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 25, name: 'Gỏi Cá Chép', badge: 'hot',
+                    desc: 'Gỏi cá chép tươi ngon, ăn kèm rau sống và chẻo.',
+                    price: 279000, unit: '1 suất',
+                    img: '/images/cahapgunghanh.jpg', featured: true
+                },
+                {
+                    id: 26, name: 'Đầu cá chép nấu canh chua', badge: null,
+                    desc: 'Đầu cá chép nấu với nước canh chua ngọt, thơm nồng.',
+                    price: 179000, unit: '1 bát',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 27, name: 'Cá Chép Hấp', badge: null,
+                    desc: 'Cá hấp theo lối truyền thống, gừng tươi và hành lá, chan nước xì dầu nóng.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 28, name: 'Cá Chép chiên ròn', badge: null,
+                    desc: 'Cá chép chiên ròn thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 29, name: 'Cá Chép rang muối', badge: null,
+                    desc: 'Cá chép rang muối đặc biệt của Hoả Ngư Quán.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 30, name: 'Cá Chép nướng', badge: null,
+                    desc: 'Cá chép nướng than hoa, thơm nồng và giữ được độ tươi ngon.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            fish5: [
+                {
+                    id: 31, name: 'Gỏi bạch tuộc sốt Thái', badge: 'special',
+                    desc: 'Bạch tuộc tươi ngon, sốt Thái đậm đà, ăn kèm rau sống và bánh tráng.',
+                    price: 279000, unit: '1 phần',
+                    img: '/images/goibachtoc.jpg'
+                },
+                {
+                    id: 32, name: 'Gỏi tôm sốt Thái', badge: 'hot',
+                    desc: 'Tôm tươi ngon, sốt Thái đậm đà, ăn kèm rau sống và bánh tráng.',
+                    price: 379000, unit: '1 phần',
+                    img: '/images/goitom.jpg', featured: true
+                },
+                {
+                    id: 33, name: 'Gỏi vịt hoa chuối', badge: 'special',
+                    desc: 'Vịt hoa chuối tươi ngon, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 219000, unit: '1 phần',
+                    img: '/images/goi vit hoa chuối.jpg'
+                },
+                {
+                    id: 34, name: 'Gỏi đu đủ bò Khô', badge: null,
+                    desc: 'Đu đủ bò khô giòn rụm, ăn kèm rau sống và bánh tráng.',
+                    price: 179000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 35, name: 'Gà xé phay', badge: 'hot',
+                    desc: 'Gà xé phay thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 179000, unit: '1 suất',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 36, name: 'Gỏi bò Tứ Xuyên', badge: null,
+                    desc: 'Gỏi bò Tứ Xuyên tươi ngon, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 179000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 37, name: 'Gỏi bò sốt Wasabi', badge: null,
+                    desc: 'Gỏi bò sốt Wasabi thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 159000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 38, name: 'Gỏi bò cà pháo', badge: null,
+                    desc: 'Gỏi bò cà pháo thơm ngon, ăn kèm rau sống và bánh tráng.',
+                    price: 169000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 39, name: 'Gỏi cá Mè', badge: 'special',
+                    desc: 'Gỏi cá Mè tươi ngon, ăn cùng các loại lá đặc biệt của Hoả Ngư Quán.',
+                    price: 350000, unit: '1 con (~700g)',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            seafood: [
+                {
+                    id: 40, name: 'Râu mực xào xu hào', badge: null,
+                    desc: 'Râu mực tươi xào với xu hào giòn ngọt, nước sốt đậm đà.',
+                    price: 279000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 41, name: 'Ốc hương ủ muối thảo mộc', badge: 'new',
+                    desc: 'Ốc hương tươi ủ muối thảo mộc, thịt mềm ngọt, thơm mùi thảo mộc.',
+                    price: 379000, unit: '1 suất',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 42, name: 'Mực hấp chanh', badge: 'special',
+                    desc: 'Mực tươi hấp với chanh, thịt mềm ngọt, thơm mùi chanh.',
+                    price: 279000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 43, name: 'Tôm nướng muối ớt', badge: 'hot',
+                    desc: 'Tôm nướng muối ớt đậm vị, thịt ngọt dai, thơm mùi sả.',
+                    price: 350000, unit: '1 suất (12 con)',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+            ],
+            chicken: [
+                {
+                    id: 44, name: 'Gà Hấp lá chanh', badge: 'hot',
+                    desc: 'Gà hấp lá chanh chấm cùng muối hành.',
+                    price: 350000, unit: '1 con',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 45, name: 'Gà quay thảo mộc', badge: 'hot',
+                    desc: 'Gà quay thơm mùi thảo mộc, thịt thơm chắc mọng nước.',
+                    price: 350000, unit: '1 con',
+                    img: '/images/cahapgunghanh.jpg', featured: true    
+                },
+                {
+                    id: 46, name: 'Gà rang muối', badge: 'special',
+                    desc: 'Gà rang muối cùng gia vị đặc biệt của Hoả Ngư Quán.',
+                    price: 350000, unit: '1 suất',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 47, name: 'Gà nướng nguyên con', badge: null,
+                    desc: 'Gà nướng nguyên con, thịt mềm ngọt, thơm mùi thảo mộc.',
+                    price: 350000, unit: '1 con',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+                {
+                    id: 48, name: 'Gà rang gừng', badge: null,
+                    desc: 'Gà rang gừng thơm lừng, thịt mềm ngọt, ăn kèm cơm trắng.',
+                    price: 319000, unit: '1 suất',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 49, name: 'Gà chiên mắm', badge: 'special',
+                    desc: 'Gà chiên mắm thơm lừng, thịt mềm ngọt, ăn kèm cơm trắng.',
+                    price: 179000, unit: '1 suất',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+                {
+                    id: 50, name: 'Gan Gà cháy tỏi', badge: null,
+                    desc: 'Gan gà cháy tỏi thơm lừng, thịt gan mềm ngọt.',
+                    price: 129000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {                    
+                    id: 51, name: 'Lòng mề gà xào', badge: null,
+                    desc: 'Lòng mề gà xào thơm lừng, thịt mềm ngọt cùng với rau củ theo mùa.',
+                    price: 169000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {                    
+                    id: 52, name: 'Gà nguyên con chiên ròn', badge: null,
+                    desc: 'Gà nguyên con chiên ròn, thịt mềm ngọt, ăn kèm dưa chuột, dưa chua.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            beef: [
+                {
+                    id: 53, name: 'Bò sốt tiêu đen/ tiêu xanh', badge: 'hot',
+                    desc: 'Bò sốt tiêu đen/ tiêu xanh thơm lừng, thịt mềm ngọt dậy mùi tiêu ăn cùng bánh mì.',
+                    price: 279000, unit: '1 suất',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 54, name: 'Bò cuộn lá lốt', badge: null,
+                    desc: 'Bò cuộn lá lốt thơm lừng, thịt mềm ngọt, lá lốt thơm thâm gia vị.',
+                    price: 239000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 55, name: 'Bắp bò ngâm mắm', badge: 'special',
+                    desc: 'Bắp bò ngâm mắm thơm lừng, thịt mềm ngọt, ăn lai dai.',
+                    price: 279000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 56, name: 'Bò xào lăn', badge: null,
+                    desc: 'Bò xào lăn thơm lừng, thịt mềm ngọt, thơm vị bò, rau củ,...',
+                    price: 179000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 57, name: 'Phá lấu bò', badge: 'new',
+                    desc: 'Bò nấu với nước dùng đậm đà, thơm lừng, ăn cùng bún tươi và rau sống.',
+                    price: 499000, unit: '1 nồi',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 58, name: 'Bò hấp', badge: null,
+                    desc: 'Bò hấp thơm lừng, thịt mềm ngọt, ăn kèm rau sống và bánh tráng.',
+                    price: 279000, unit: '1 đĩa',
+                    img: '/images/canuongbowchanh.jpg'    
+                },
+                {
+                    id: 59, name: 'Bò nướng', badge: null,
+                    desc: 'Bò nướng thơm lừng, thịt mềm ngọt, ăn kèm rau sống.',
+                    price: 350000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+            ],
+            pork: [
+                {
+                    id: 60, name: 'Sườn nướng', badge: 'hot',
+                    desc: 'Sườn nướng thơm lừng, thịt mềm ngọt.',
+                    price: 219000, unit: '1 suất',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 61, name: 'Diềm nướng', badge: 'hot',
+                    desc: 'Diềm nướng thơm lừng, thịt mềm ngọt.',
+                    price: 250000, unit: '1 suất',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 62, name: 'Má đào nướng/ hấp', badge: 'special',
+                    desc: 'Má đào nướng/ hấp thơm lừng, thịt mềm ngọt.',
+                    price: 350000, unit: '1 suất',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 63, name: 'Hàm hấp', badge: 'special',
+                    desc: 'Hàm hấp thơm lừng, thịt mềm ngọt giòn giòn.',
+                    price: 279000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 64, name: 'Chân giò hầm Tứ Xuyên', badge: 'special',
+                    desc: 'Chân giò hầm Tứ Xuyên thơm lừng, thịt mềm ngọt, thơm mùi thảo mộc đậm vị cay Tứ xuyên.',
+                    price: 499000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 65, name: 'Thịt nấu đu đủ', badge: null,
+                    desc: 'Thịt nấu với đu đủ thơm lừng, thịt mềm ngọt.',
+                    price: 350000, unit: '1 bát',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+                {
+                    id: 66, name: 'Giả cầy', badge: null,
+                    desc: 'Thịt nấu mềm thơm mùi gia vị giả cầy, nước sốt sánh quyện chấm cùng bánh mì.',
+                    price: 350000, unit: '1 bát',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 67, name: 'Thịt chiên xù', badge: 'special',
+                    desc: 'Thịt chiên vàng ươm, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 350000, unit: '1 suất',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 68, name: 'Ba chỉ cháy cạnh', badge: 'special',
+                    desc: 'Thịt ba chỉ cháy cạnh thơm lừng, thịt mềm ngọt, ăn kèm cơm trắng.',
+                    price: 169000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 69, name: 'Trễ heo hấp', badge: 'new',
+                    desc: 'Trễ heo hấp thơm lừng, thịt mềm ngọt nóng hổi thơm ngon khi lên bàn.',
+                    price: 379000, unit: '1 bát',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            salad: [
+                {
+                    id: 70, name: 'Salad gà ron sốt chanh leo', badge: 'hot',
+                    desc: 'Salad gà ron sốt chanh leo thơm lừng, thịt gà ròn, sốt thơm đậm đà.',
+                    price: 69000, unit: '1 đĩa',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 71, name: 'Mướp đắng ruốc', badge: null,
+                    desc: 'Mướp đắng ruốc thơm lừng, hợp để nhậu lai rai.',
+                    price: 79000, unit: '1 đĩa',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 72, name: 'Salad Lườn ngỗng', badge: 'special',
+                    desc: 'Salad lườn ngỗng thơm lừng, thịt ngỗng mềm ngọt, sốt thơm đậm đà.',
+                    price: 219000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 73, name: 'Salad Cá ngừ', badge: null,
+                    desc: 'Salad cá ngừ thơm lừng, thịt cá mềm ngọt, sốt thơm đậm đà.',
+                    price: 109000, unit: '1 đĩa',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 74, name: 'Salad hoa quả và tôm', badge: 'new',
+                    desc: 'Salad hoa quả và tôm thơm lừng, kết hợp giữa các loại trái cây tươi và tôm ngọt.',
+                    price: 129000, unit: '1 đĩa',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 75, name: 'Salad táo đỏ và hạt óc chó', badge: null,
+                    desc: 'Salad táo đỏ và hạt óc chó thơm lừng, kết hợp giữa táo đỏ tươi và hạt óc chó giòn.',
+                    price: 159000, unit: '1 đĩa',
+                    img: '/images/canuongbowchanh.jpg'
+                },
+            ],
+            duck: [
+                {
+                    id: 76, name: 'Cá Nướng Bơ Chanh', badge: 'hot',
+                    desc: 'Cá tươi nướng than hoa, phủ bơ chanh thơm lừng, ăn kèm rau sống và bánh tráng.',
+                    price: 259000, unit: '1 con (~600g)',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 77, name: 'Cá Hấp Gừng Hành', badge: null,
+                    desc: 'Cá hấp theo lối truyền thống, gừng tươi và hành lá, chan nước xì dầu nóng.',
+                    price: 229000, unit: '1 con (~500g)',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 78, name: 'Cá Chiên Giòn Sốt Chua Ngọt', badge: 'special',
+                    desc: 'Cá chiên vàng ươm, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 249000, unit: '1 con (~600g)',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 79, name: 'Cá Kho Tộ', badge: null,
+                    desc: 'Cá kho tiêu đậm đà, nước kho sệt, thơm mùi tiêu xanh, ăn với cơm trắng.',
+                    price: 195000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 80, name: 'Cá Lóc Nướng Trui', badge: 'new',
+                    desc: 'Cá lóc đồng nướng rơm trui, chấm mắm gừng, ăn với bún và rau sống.',
+                    price: 285000, unit: '1 con (~700g)',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 81, name: 'Vịt quay Bắc Kinh', badge: 'hot',
+                    desc: 'Vịt quay Bắc Kinh thơm lừng, thịt mềm ngọt, da giòn rụm, ăn kèm bánh tráng và nước chấm đặc biệt.',
+                    price: 550000, unit: '1 con',
+                    img: '/api/placeholder/300/210', featured: true
+                },
+                {
+                    id: 82, name: 'Vịt nướng sả ớt', badge: 'special',
+                    desc: 'Vịt nướng sả ớt thơm lừng, thịt mềm ngọt, ăn kèm rau sống và bánh tráng.',
+                    price: 350000, unit: '1 con',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            fish6: [
+                {
+                    id: 55, name: 'Cá Nướng Bơ Chanh', badge: 'hot',
+                    desc: 'Cá tươi nướng than hoa, phủ bơ chanh thơm lừng, ăn kèm rau sống và bánh tráng.',
+                    price: 259000, unit: '1 con (~600g)',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 56, name: 'Cá Hấp Gừng Hành', badge: null,
+                    desc: 'Cá hấp theo lối truyền thống, gừng tươi và hành lá, chan nước xì dầu nóng.',
+                    price: 229000, unit: '1 con (~500g)',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 57, name: 'Cá Chiên Giòn Sốt Chua Ngọt', badge: 'special',
+                    desc: 'Cá chiên vàng ươm, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 249000, unit: '1 con (~600g)',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 58, name: 'Cá Kho Tộ', badge: null,
+                    desc: 'Cá kho tiêu đậm đà, nước kho sệt, thơm mùi tiêu xanh, ăn với cơm trắng.',
+                    price: 195000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 59, name: 'Cá Lóc Nướng Trui', badge: 'new',
+                    desc: 'Cá lóc đồng nướng rơm trui, chấm mắm gừng, ăn với bún và rau sống.',
+                    price: 285000, unit: '1 con (~700g)',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            soup: [
+                {
+                    id: 60, name: 'Canh Chua Cá Lớn', badge: 'hot',
+                    desc: 'Canh chua đặc trưng miền Nam, vị chua thanh, ngọt cá, cà chua đỏ hồng.',
+                    price: 175000, unit: '1 nồi lớn',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 61, name: 'Lẩu Hải Sản Đặc Biệt', badge: 'special',
+                    desc: 'Lẩu nước dùng xương hầm 6 tiếng, thập cẩm hải sản tươi sống cao cấp.',
+                    price: 550000, unit: '2–3 người',
+                    img: '/api/placeholder/300/210', featured: false
+                },
+                {
+                    id: 62, name: 'Bún Cá Ngừ Đại Dương', badge: 'new',
+                    desc: 'Bún cá ngừ nước dùng trong vắt, thơm mùi nghệ, ăn kèm giá đỗ và rau húng.',
+                    price: 85000, unit: '1 tô',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            BBQ: [
+                {
+                    id: 63, name: 'Cơm Rang Hải Sản', badge: null,
+                    desc: 'Cơm rang hải sản kiểu nhà hàng, đầy ắp tôm mực, thơm mùi tỏi phi.',
+                    price: 95000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 64, name: 'Mì Xào Hải Sản Đặc Biệt', badge: 'hot',
+                    desc: 'Mì xào giòn bên dưới, hải sản xào sốt demi-glace đổ trên mặt, hấp dẫn.',
+                    price: 115000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 65, name: 'Cơm Niêu Cá Kho', badge: null,
+                    desc: 'Cơm niêu đất nóng hổi, cá kho tiêu đặt sẵn, dưa leo muối chua giòn.',
+                    price: 89000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+            ],
+            combo: [
+                {
+                    id: 66, name: 'Cá Nướng Bơ Chanh', badge: 'hot',
+                    desc: 'Cá tươi nướng than hoa, phủ bơ chanh thơm lừng, ăn kèm rau sống và bánh tráng.',
+                    price: 259000, unit: '1 con (~600g)',
+                    img: '/images/canuongbowchanh.jpg', featured: true
+                },
+                {
+                    id: 67, name: 'Cá Hấp Gừng Hành', badge: null,
+                    desc: 'Cá hấp theo lối truyền thống, gừng tươi và hành lá, chan nước xì dầu nóng.',
+                    price: 229000, unit: '1 con (~500g)',
+                    img: '/images/cahapgunghanh.jpg'
+                },
+                {
+                    id: 68, name: 'Cá Chiên Giòn Sốt Chua Ngọt', badge: 'special',
+                    desc: 'Cá chiên vàng ươm, sốt chua ngọt đặc biệt của Hoả Ngư Quán.',
+                    price: 249000, unit: '1 con (~600g)',
+                    img: '/images/cachienronsotchuangot.jpg'
+                },
+                {
+                    id: 69, name: 'Cá Kho Tộ', badge: null,
+                    desc: 'Cá kho tiêu đậm đà, nước kho sệt, thơm mùi tiêu xanh, ăn với cơm trắng.',
+                    price: 195000, unit: '1 phần',
+                    img: '/api/placeholder/300/210'
+                },
+                {
+                    id: 70, name: 'Cá Lóc Nướng Trui', badge: 'new',
+                    desc: 'Cá lóc đồng nướng rơm trui, chấm mắm gừng, ăn với bún và rau sống.',
+                    price: 285000, unit: '1 con (~700g)',
+                    img: '/api/placeholder/300/210'
+                },
+            ]
+        };
+
+        let currentItem = null;
+        let currentPayment = 'visa';
+        let currentOrderType = 'dinein';
+
+        // ── RENDER ──
+        function formatPrice(p) {
+            return p.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        // ── CART SYSTEM ──
+let cart = [];
+function loadCartFromStorage() {
+    try { cart = JSON.parse(localStorage.getItem('hnq_cart') || '[]'); } catch(e) { cart = []; }
+    updateFloatingCart();
+}
+function saveCartToStorage() {
+    localStorage.setItem('hnq_cart', JSON.stringify(cart));
+    updateFloatingCart();
+}
+function addToCart(item) {
+    const existing = cart.find(c => c.id === item.id);
+    if (existing) { existing.qty += 1; }
+    else { cart.push({ id: item.id, name: item.name, price: item.price, unit: item.unit, img: item.img, type: 'food', qty: 1, note: '' }); }
+    saveCartToStorage();
+    showAddFeedback(item.id);
+}
+function updateFloatingCart() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const fab = document.getElementById('cartFab');
+    if (!fab) return;
+    if (total > 0) {
+        fab.style.display = 'flex';
+        document.getElementById('cartFabCount').textContent = total + ' món';
+        document.getElementById('cartFabPrice').textContent = totalPrice.toLocaleString('vi-VN') + ' ₫';
+    } else {
+        fab.style.display = 'none';
+    }
+}
+function showAddFeedback(id) {
+    const btn = document.querySelector(`[data-add-id="${id}"]`);
+    if (!btn) return;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Đã thêm';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+}
+
+function renderCard(item) {
+    const badgeMap = { hot: 'badge-hot', new: 'badge-new', special: 'badge-special' };
+    const badgeLabel = { hot: '🔥 Hot', new: '✦ Mới', special: '★ Đặc Biệt' };
+    const badge = item.badge
+        ? `<span class="menu-card-badge ${badgeMap[item.badge]}">${badgeLabel[item.badge]}</span>` : '';
+    const featuredClass = item.featured ? 'featured' : '';
+
+    return `
+    <div class="menu-card ${featuredClass}" data-id="${item.id}">
+        <div class="menu-card-img">
+            ${badge}
+            <img src="${item.img}" alt="${item.name}" onerror="this.src='/api/placeholder/300/210'">
+        </div>
+        <div class="menu-card-body">
+            <h3>${item.name}</h3>
+            <p>${item.desc}</p>
+            <div class="menu-card-footer">
+                <div class="menu-price">
+                    ${formatPrice(item.price)}
+                    <small>${item.unit}</small>
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <button class="btn"
+                        style="background:transparent;border:1px solid var(--border2);color:var(--gold);padding:0.6rem 1rem;"
+                        data-add-id="${item.id}"
+                        onclick="addToCart(menuData[Object.keys(menuData).find(k=>menuData[k].find(i=>i.id===${item.id}))].find(i=>i.id===${item.id}))">
+                        + Thêm Giỏ
+                    </button>
+                    <a href="order.html" class="btn" style="padding:0.6rem 1rem;">Đặt Ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+        function renderAll() {
+            ['fish','fish2','fish3','fish4','fish5','seafood','chicken','beef','pork','salad','duck','fish6','soup','BBQ','combo'].forEach(cat => {
+                document.getElementById('grid-' + cat).innerHTML =
+                    menuData[cat].map(renderCard).join('');
+            });
+        }
+
+        // ── FILTER ──
+        function filterMenu(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const blocks = document.querySelectorAll('.category-block');
+            if (cat === 'all' || cat === 'hot') {
+                blocks.forEach(b => {
+                    b.style.display = 'block';
+                    if (cat === 'hot') {
+                        const catKey = b.id.replace('cat-','');
+                        const filtered = menuData[catKey].filter(i => i.badge === 'hot');
+                        document.getElementById('grid-' + catKey).innerHTML =
+                            filtered.length ? filtered.map(renderCard).join('') :
+                            '<div class="empty-state">Không có món hot trong danh mục này</div>';
+                    } else {
+                        const catKey = b.id.replace('cat-','');
+                        document.getElementById('grid-' + catKey).innerHTML = menuData[catKey].map(renderCard).join('');
+                    }
+                });
+            } else {
+                blocks.forEach(b => {
+                    b.style.display = b.dataset.category === cat ? 'block' : 'none';
+                });
+            }
+        }
+
+        // ── ORDER ──
+        function openOrder(id) {
+            const allItems = Object.values(menuData).flat();
+            currentItem = allItems.find(i => i.id === id);
+            if (!currentItem) return;
+
+            document.getElementById('orderItemTitle').textContent = currentItem.name;
+            document.getElementById('unitPrice').textContent = formatPrice(currentItem.price);
+            document.getElementById('quantity').value = 1;
+            updateTotal();
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+        }
+
+        function updateTotal() {
+            if (!currentItem) return;
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            document.getElementById('totalAmount').textContent = formatPrice(currentItem.price * qty);
+        }
+
+        function selectPayment(method, el) {
+            document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentPayment = method;
+        }
+
+        function selectOrderType(type, el) {
+            document.querySelectorAll('.order-type').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            currentOrderType = type;
+            document.getElementById('dineinOptions').style.display = type === 'dinein' ? 'block' : 'none';
+            document.getElementById('takeoutOptions').style.display = type === 'takeout' ? 'block' : 'none';
+        }
+
+        function placeOrder() {
+            if (!currentItem) return;
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            const total = currentItem.price * qty;
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push({
+                id: Date.now(),
+                item: currentItem.name,
+                quantity: qty,
+                total: total,
+                type: currentOrderType,
+                payment: currentPayment,
+                status: 'pending',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('orders', JSON.stringify(orders));
+            closeOrderModal();
+            alert(`✅ Đặt món thành công!\n${currentItem.name} x${qty}\nTổng: ${formatPrice(total)}`);
+        }
+
+        // Close on outside click
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) closeOrderModal();
+        });
+
+        // ── INIT ──
+        document.addEventListener('DOMContentLoaded', () => { loadCartFromStorage(); renderAll(); });
+    </script>
+    <script>
+function toggleMenu() {
+    const nav = document.querySelector('nav');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+// Đóng menu khi click vào link
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('nav').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
+</body>
+</html>

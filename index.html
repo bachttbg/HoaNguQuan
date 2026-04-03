@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoả Ngư Quán - Fish Restaurant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <style>
+        /* ══════════════════════════════
+            PROMO BANNER (ticker)
+        ══════════════════════════════ */
+        .promo-ticker {
+            background: var(--gold);
+            color: #0c0b09;
+            padding: 0.45rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ticker-track {
+            display: inline-block;
+            animation: ticker 28s linear infinite;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        @keyframes ticker {
+            from { transform: translateX(100vw); }
+            to   { transform: translateX(-100%); }
+        }
+        .ticker-sep { margin: 0 2.5rem; opacity: 0.5; }
+
+        /* ══════════════════════════════
+            HERO
+        ══════════════════════════════ */
+        .hero {
+            position: relative;
+            height: 100vh; min-height: 600px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            background-image:
+                linear-gradient(to bottom, rgba(12,11,9,0.25) 0%, rgba(12,11,9,0.65) 65%, var(--bg) 100%),
+                url('/images/599605271_122112758265076556_4276876697300667532_n.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(232,184,75,0.07) 0%, transparent 70%);
+        }
+        .hero-content { position: relative; z-index: 1; padding: 2rem; max-width: 800px; margin: 0 auto; }
+        .hero-eyebrow {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(232,184,75,0.4);
+            padding: 0.38rem 1.2rem;
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1s ease both;
+        }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3.5rem, 9vw, 7rem);
+            font-weight: 700;
+            line-height: 0.95;
+            color: var(--text);
+            margin-bottom: 1.2rem;
+            animation: fadeUp 1s ease 0.2s both;
+        }
+        .hero h1 em { color: var(--gold); font-style: italic; display: block; }
+        .hero-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 520px;
+            margin-left: auto; margin-right: auto;
+            animation: fadeUp 1s ease 0.35s both;
+            line-height: 1.7;
+        }
+        .hero-ctas {
+            display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+            animation: fadeUp 1s ease 0.5s both;
+        }
+        .hero-scroll {
+            position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+            color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.6rem;
+            letter-spacing: 0.2em; text-transform: uppercase; animation: fadeIn 2s ease 1s both;
+        }
+        .scroll-line {
+            width: 1px; height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.3)} }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+        /* ══════════════════════════════
+            POSTER SECTIONS
+        ══════════════════════════════ */
+        .poster-section { padding: 0; overflow: hidden; }
+
+        /* Poster 1 — Full bleed split */
+        .poster-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 580px;
+        }
+        .poster-split-img {
+            position: relative; overflow: hidden;
+        }
+        .poster-split-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 8s ease;
+        }
+        .poster-split:hover .poster-split-img img { transform: scale(1.04); }
+        .poster-split-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, transparent 60%, var(--bg) 100%);
+        }
+        .poster-split-copy {
+            background: var(--bg);
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 5rem 4rem;
+        }
+        .poster-eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+        .poster-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.4rem, 4vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.05;
+            color: var(--text);
+            margin-bottom: 1.25rem;
+        }
+        .poster-title em { color: var(--gold); font-style: italic; }
+        .poster-body {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 440px;
+        }
+        .poster-stats {
+            display: flex; gap: 2.5rem; margin-bottom: 2.5rem;
+        }
+        .pstat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .pstat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        /* Poster 2 — Full width dark */
+        .poster-full {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .poster-full::before {
+            content: 'HOẢ NGƯ QUÁN';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(6rem, 18vw, 18rem);
+            font-weight: 700;
+            color: rgba(232,184,75,0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+        .poster-full-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 2rem; }
+        .poster-full .poster-eyebrow { display: block; margin-bottom: 1.25rem; }
+        .poster-full .poster-title { margin-bottom: 1.5rem; }
+        .poster-full .poster-body { margin: 0 auto 2.5rem; }
+        .poster-full-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Poster 3 — Feature cards row */
+        .features-section {
+            padding: 6rem 0;
+            background: var(--bg);
+        }
+        .features-header { text-align: center; margin-bottom: 4rem; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .feature-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+        .feature-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Poster 4 — Big image banner */
+        .poster-banner {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+        .poster-banner-bg {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(135deg, rgba(12,11,9,0.85) 0%, rgba(12,11,9,0.4) 60%, rgba(12,11,9,0.75) 100%),
+                url('/images/599605271_122112758265076556_4276876697300667532_n.jpg');
+            background-size: cover;
+            background-position: center 30%;
+            transition: transform 8s ease;
+        }
+        .poster-banner:hover .poster-banner-bg { transform: scale(1.03); }
+        .poster-banner-content {
+            position: relative; z-index: 1;
+            height: 100%;
+            display: flex; align-items: center;
+        }
+        .poster-banner-copy { max-width: 600px; padding: 0 2rem; }
+        .poster-banner-copy .poster-eyebrow { margin-bottom: 1rem; }
+        .poster-banner-copy .poster-title { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 1.25rem; }
+        .poster-banner-copy .poster-body { margin-bottom: 2rem; }
+
+        /* Highlights ribbon */
+        .ribbon {
+            background: var(--gold);
+            color: #0c0b09;
+            padding: 2rem 0;
+            overflow: hidden;
+        }
+        .ribbon-inner {
+            display: flex;
+            gap: 0;
+            animation: ribbonScroll 20s linear infinite;
+        }
+        @keyframes ribbonScroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .ribbon-item {
+            display: flex; align-items: center; gap: 1rem;
+            white-space: nowrap;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            padding: 0 3rem;
+            flex-shrink: 0;
+        }
+        .ribbon-dot { width: 6px; height: 6px; background: rgba(12,11,9,0.35); border-radius: 50%; }
+
+        /* ══════════════════════════════
+            INFO SECTION
+        ══════════════════════════════ */
+        .info-section {
+            padding: 6rem 0;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 5rem;
+            align-items: start;
+        }
+        .info-left .section-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        .info-left h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .info-left h2 em { color: var(--gold); font-style: italic; }
+        .info-left p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+        .info-details {
+            margin-top: 2.5rem;
+            display: grid;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .info-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row-label {
+            padding: 1rem 1.25rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+        .info-row-val {
+            padding: 1rem 1.25rem;
+            font-size: 0.88rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        .info-right { display: flex; flex-direction: column; gap: 1.5rem; }
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 1.75rem;
+            transition: border-color 0.2s;
+        }
+        .info-card:hover { border-color: var(--border2); }
+        .info-card-head {
+            display: flex; align-items: center; gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .info-card-icon { font-size: 1.4rem; }
+        .info-card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .info-card p {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        .info-card a {
+            color: var(--gold);
+            text-decoration: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem;
+        }
+        .info-card a:hover { text-decoration: underline; }
+        .hours-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem 1.5rem;
+            margin-top: 0.75rem;
+        }
+        .hour-row {
+            display: flex; justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .hour-row .day { color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; }
+        .hour-row .time { color: var(--text); }
+        .hour-row.today .day, .hour-row.today .time { color: var(--gold); }
+        .map-wrapper {
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            height: 200px;
+        }
+        .map-wrapper iframe { width: 100%; height: 100%; display: block; }
+
+        /* ══════════════════════════════
+            ABOUT SECTION (redesigned)
+        ══════════════════════════════ */
+        .about-section { padding: 6rem 0; background: var(--bg); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+        .about-img-stack { position: relative; height: 480px; }
+        .about-img-main {
+            position: absolute;
+            top: 0; left: 0; right: 4rem; bottom: 4rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .about-img-main img { width: 100%; height: 100%; object-fit: cover; }
+        .about-img-accent {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 55%;
+            background: var(--gold-dim);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            padding: 1.75rem;
+        }
+        .about-img-accent .num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .about-img-accent .num-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+        .about-copy .section-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--gold);
+            display: block; margin-bottom: 0.75rem;
+        }
+        .about-copy h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700; color: var(--text);
+            line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        .about-copy h2 em { color: var(--gold); font-style: italic; }
+        .about-copy p {
+            font-size: 0.88rem; color: var(--text-muted);
+            line-height: 1.85; margin-bottom: 1rem;
+        }
+        .about-values {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1rem; margin-top: 2rem;
+        }
+        .about-val {
+            border-left: 2px solid var(--gold);
+            padding-left: 1rem;
+        }
+        .about-val strong {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        .about-val span {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ══════════════════════════════
+            ACCOUNT MODAL — redesign
+        ══════════════════════════════ */
+        .modal {
+            display: none;
+            position: fixed; inset: 0;
+            z-index: 1000;
+            align-items: center; justify-content: center;
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.75);
+        }
+        .modal.open { display: flex; }
+
+        /* New full-screen side panel style */
+        .account-panel {
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            width: 480px;
+            max-width: 100vw;
+            background: var(--bg2);
+            border-left: 1px solid var(--border2);
+            display: flex; flex-direction: column;
+            z-index: 1001;
+            animation: slideInPanel 0.35s cubic-bezier(.22,1,.36,1) both;
+            overflow: hidden;
+        }
+        @keyframes slideInPanel {
+            from { transform: translateX(100%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+        .panel-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            cursor: pointer;
+            display: none;
+        }
+        .panel-overlay.open { display: block; }
+
+        .panel-top {
+            padding: 1.75rem 1.75rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .panel-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--gold);
+        }
+        .panel-close {
+            width: 36px; height: 36px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .panel-close:hover { border-color: var(--gold); color: var(--gold); }
+
+        .panel-body { flex: 1; overflow-y: auto; padding: 1.75rem; }
+        .panel-body::-webkit-scrollbar { width: 4px; }
+        .panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+        /* Auth forms */
+        .auth-view { display: none; }
+        .auth-view.visible { display: block; }
+
+        .auth-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem; font-weight: 700;
+            color: var(--text); margin-bottom: 0.4rem;
+        }
+        .auth-title em { color: var(--gold); font-style: italic; }
+        .auth-sub {
+            font-size: 0.82rem; color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.06em;
+            margin-bottom: 2rem;
+        }
+
+        .field-group { margin-bottom: 1.1rem; }
+        .field-group label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--text-muted);
+            margin-bottom: 0.45rem;
+        }
+        .field-group input {
+            width: 100%; padding: 0.75rem 1rem;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 2px; color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .field-group input:focus { outline: none; border-color: var(--gold); }
+        .field-group input::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+        .auth-btn {
+            width: 100%; padding: 0.9rem;
+            background: var(--gold); color: #0c0b09;
+            border: none; border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s;
+            margin-bottom: 1.25rem;
+        }
+        .auth-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+        .auth-divider {
+            display: flex; align-items: center; gap: 1rem;
+            margin: 0.5rem 0 1.25rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--text-muted);
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+        .social-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 1.5rem; }
+        .social-btn {
+            padding: 0.7rem;
+            border-radius: 2px; cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem; font-weight: 500;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .google-btn  { background: #fff; color: #333; border: 1px solid #ddd; }
+        .google-btn:hover  { background: #f5f5f5; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .fb-btn { background: #1877f2; color: white; border: none; }
+        .fb-btn:hover { background: #166fe5; box-shadow: 0 4px 12px rgba(24,119,242,0.3); }
+
+        .auth-switch {
+            text-align: center; font-size: 0.82rem; color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold); text-decoration: none;
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+
+        /* Dashboard */
+        .dash-user {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.25rem;
+            background: var(--gold-dim);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+        }
+        .dash-avatar {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.25rem; font-weight: 700; color: #0c0b09;
+            flex-shrink: 0;
+        }
+        .dash-name {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600; font-size: 0.95rem;
+            color: var(--text); word-break: break-word;
+        }
+        .dash-email {
+            font-size: 0.75rem; color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        .dash-tabs {
+            display: flex; border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem; gap: 0;
+        }
+        .dash-tab {
+            padding: 0.65rem 1rem;
+            border: none; background: none;
+            cursor: pointer;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px; transition: all 0.2s;
+        }
+        .dash-tab:hover { color: var(--text); }
+        .dash-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        .dash-tab-pane { display: none; }
+        .dash-tab-pane.active { display: block; }
+
+        .dash-section-title {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--text-muted);
+            margin-bottom: 0.85rem;
+        }
+        .dash-empty {
+            text-align: center; padding: 2.5rem 1rem;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            letter-spacing: 0.08em;
+        }
+        .dash-empty span { display: block; font-size: 1.8rem; margin-bottom: 0.5rem; opacity: 0.4; }
+
+        .order-mini {
+            border: 1px solid var(--border); border-radius: 2px;
+            padding: 0.9rem 1rem; margin-bottom: 0.6rem;
+            background: var(--bg); font-size: 0.82rem;
+        }
+        .order-mini-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.3rem;
+        }
+        .order-mini-name { font-weight: 600; color: var(--text); }
+        .order-mini-price { font-family: 'DM Mono', monospace; color: var(--gold); font-size: 0.8rem; }
+        .order-mini-meta { font-size: 0.75rem; color: var(--text-muted); }
+        .order-mini-status {
+            display: inline-block; margin-top: 0.4rem;
+            padding: 0.15rem 0.55rem; border-radius: 2px;
+            font-family: 'DM Mono', monospace; font-size: 0.6rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .s-pending   { background: rgba(232,184,75,0.12); color: var(--gold); border: 1px solid rgba(232,184,75,0.25); }
+        .s-done      { background: rgba(92,184,122,0.12); color: var(--green); border: 1px solid rgba(92,184,122,0.25); }
+        .s-cancelled { background: rgba(224,82,82,0.12);  color: var(--red);   border: 1px solid rgba(224,82,82,0.25); }
+        .s-confirmed { background: rgba(74,158,255,0.12); color: #4a9eff;      border: 1px solid rgba(74,158,255,0.25); }
+        .s-preparing { background: rgba(232,184,75,0.12); color: var(--gold);  border: 1px solid rgba(232,184,75,0.25); }
+
+        .res-mini {
+            border: 1px solid var(--border); border-radius: 2px;
+            padding: 0.9rem 1rem; margin-bottom: 0.6rem;
+            background: var(--bg); font-size: 0.82rem;
+        }
+
+        .history-item {
+            padding: 0.55rem 0;
+            border-bottom: 1px solid var(--border);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem; color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+        .history-item:last-child { border-bottom: none; }
+
+        .new-res-btn {
+            width: 100%; padding: 0.7rem;
+            background: transparent; border: 1px dashed var(--border2);
+            color: var(--gold); border-radius: 2px;
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s; margin-top: 0.75rem;
+        }
+        .new-res-btn:hover { background: var(--gold-dim); }
+
+        .logout-link {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            width: 100%; padding: 0.75rem;
+            background: transparent; border: 1px solid rgba(224,82,82,0.25);
+            color: var(--red); border-radius: 2px;
+            font-family: 'DM Mono', monospace; font-size: 0.68rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s; margin-top: 1.25rem;
+        }
+        .logout-link:hover { background: rgba(224,82,82,0.08); border-color: var(--red); }
+
+        /* ══════════════════════════════
+            RESPONSIVE
+        ══════════════════════════════ */
+        @media (max-width: 900px) {
+            .poster-split { grid-template-columns: 1fr; }
+            .poster-split-img { height: 320px; }
+            .poster-split-img::after { background: linear-gradient(to bottom, transparent 60%, var(--bg) 100%); }
+            .poster-split-copy { padding: 3rem 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .about-img-stack { height: 320px; }
+        }
+        @media (max-width: 600px) {
+            .poster-banner { height: 380px; }
+            .account-panel { width: 100vw; }
+            .poster-stats { gap: 1.5rem; }
+        }
+    </style>
+    <!-- Google OAuth SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Facebook SDK -->
+    <script>
+        window.fbAsyncInit = function() {
+        FB.init({ appId: '965763762604922', cookie: true, xfbml: true, version: 'v19.0' });
+    };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js"></script>
+</head>
+<body>
+
+<!-- Promo Ticker -->
+<div class="promo-ticker">
+    <div class="ticker-track">
+        🐟 Tươi mỗi ngày — Thơm đến bàn <span class="ticker-sep">✦</span>
+        Mở cửa 09:00 – 22:00 mỗi ngày <span class="ticker-sep">✦</span>
+        Đặt bàn: 0388 611 883 <span class="ticker-sep">✦</span>
+        Freeship nội thành Sơn Tây <span class="ticker-sep">✦</span>
+        Combo gia đình — Giảm 10% cuối tuần <span class="ticker-sep">✦</span>
+        🐟 Tươi mỗi ngày — Thơm đến bàn <span class="ticker-sep">✦</span>
+        Mở cửa 09:00 – 22:00 mỗi ngày <span class="ticker-sep">✦</span>
+        Đặt bàn: 0388 611 883 <span class="ticker-sep">✦</span>
+    </div>
+</div>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">HOẢ <span>NGƯ </span>QUÁN</div>
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#home">HOME</a></li>
+                    <li><a href="menu.html">MENU</a></li>
+                    <li><a href="drinks.html">DRINKS</a></li>
+                    <li><a href="order.html">ORDER</a></li>
+                    <li><a href="#about">ABOUT</a></li>
+                    <li><a href="#info">INFO</a></li>
+                    <li><a href="#" onclick="openPanel(); return false;">ACCOUNT</a></li>
+                    <!-- <li><a href="manager.html" target="_blank">MANAGER</a></li> -->
+                </ul>
+            </nav>
+            <div class="contact-info">
+                <a href="tel:0388611883">📞 0388 611 883</a>
+                <a href="https://www.facebook.com/profile.php?id=61582296692992" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 256 256">
+    <path fill="#1877F2" d="M256 128C256 57.308 198.692 0 128 0C57.308 0 0 57.307 0 128c0 63.888 46.808 116.843 108 126.445V165H75.5v-37H108V99.8c0-32.08 19.11-49.8 48.347-49.8C170.352 50 185 52.5 185 52.5V84h-16.14C152.958 84 148 93.867 148 103.99V128h35.5l-5.675 37H148v89.445c61.192-9.602 108-62.556 108-126.445"/>
+    <path fill="#FFF" d="m177.825 165l5.675-37H148v-24.01C148 93.866 152.959 84 168.86 84H185V52.5S170.352 50 156.347 50C127.11 50 108 67.72 108 99.8V128H75.5v37H108v89.445A128.959 128.959 0 0 0 128 256a128.9 128.9 0 0 0 20-1.555V165h29.825"/>
+</svg> Facebook</a>
+                <a href="https://zalo.me/0388611883" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 48 48">
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M12.466 19.266h6.716l-6.716 10.137h6.716"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m41.517 4.502l-29.011.035c-8.624 7.4-11.224 17.418-3.53 31.911c.487 1.708-.359 3.42-2 5.128a11.17 11.17 0 0 0 6.864-1.265c13.983 6.27 21.919 2.18 29.644-2.733l.035-31.074a2 2 0 0 0-1.997-2.002h-.005h0Z"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M25.63 26.791c0 1.442-1.22 2.612-2.724 2.612s-2.724-1.17-2.724-2.612v-1.698c0-1.442 1.22-2.612 2.724-2.612s2.724 1.17 2.724 2.612m9.13-2.61h0a2.714 2.714 0 0 1 2.714 2.714v1.494a2.714 2.714 0 0 1-2.713 2.714h0a2.714 2.714 0 0 1-2.714-2.714v-1.494a2.714 2.714 0 0 1 2.714-2.714Zm-9.13 6.92v-6.921m2.681-3.527v9.143c0 .722.585 1.307 1.306 1.307h.392"/>
+</svg> Zalo</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- ══ HERO ══ -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow">Sơn Tây, Hà Nội — Từ 2025</div>
+            <h1>Hoả Ngư Quán</h1>
+            <p class="hero-desc">Nhà hàng Hỏa Ngư Quán đặc trưng xứ Đoài — nơi mỗi bữa ăn là một hành trình khám phá hương vị của bản sắc ngay giữa lòng thành phố.</p>
+            <div class="hero-ctas">
+                <a href="menu.html" class="btn">Xem Thực Đơn</a>
+                <a href="order.html" class="btn btn-outline">Đặt Hàng Ngay</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <div class="scroll-line"></div>
+            <span>Cuộn xuống</span>
+        </div>
+    </section>
+
+    <!-- ══ RIBBON ══ -->
+    <div class="ribbon" aria-hidden="true">
+        <div class="ribbon-inner">
+            <!-- duplicated for seamless loop -->
+            <div class="ribbon-item">Cá Tươi Hàng Ngày <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Hải Sản Sống <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Lẩu Đặc Biệt <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Cá Nướng Than Hoa <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Đặt Bàn Online <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Giao Hàng Tận Nơi <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Cá Tươi Hàng Ngày <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Hải Sản Sống <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Lẩu Đặc Biệt <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Cá Nướng Than Hoa <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Đặt Bàn Online <div class="ribbon-dot"></div></div>
+            <div class="ribbon-item">Giao Hàng Tận Nơi <div class="ribbon-dot"></div></div>
+        </div>
+    </div>
+
+    <!-- ══ POSTER 1 — SPLIT: Story ══ -->
+    <section class="poster-section">
+        <div class="poster-split">
+            <div class="poster-split-img">
+                <img src="/images/599605271_122112758265076556_4276876697300667532_n.jpg"
+                    alt="Hoả Ngư Quán"
+                    onerror="this.style.background='var(--surface)';this.style.minHeight='400px'">
+            </div>
+            <div class="poster-split-copy">
+                <div class="poster-eyebrow">✦ Câu Chuyện Của Chúng Tôi</div>
+                <h2 class="poster-title">Mới hoạt động <em>chưa lâu</em></h2>
+                <p class="poster-body">Hoả Ngư Quán đã cùng phát triển và đi lên cùng rất nhiều thực khách người Sơn Tây và cả những vị khách đến từ các tỉnh thành khác. Mỗi ngày chúng tôi nhận cá trực tiếp từ ngư dân địa phương — đảm bảo mọi món ăn đều tươi ngon nhất có thể.</p>
+                <div class="poster-stats">
+                    <div>
+                        <div class="pstat-val">2+</div>
+                        <div class="pstat-label">Năm hoạt động</div>
+                    </div>
+                    <div>
+                        <div class="pstat-val">100+</div>
+                        <div class="pstat-label">Món đặc sắc</div>
+                    </div>
+                    <div>
+                        <div class="pstat-val">150+</div>
+                        <div class="pstat-label">Khách/ngày</div>
+                    </div>
+                </div>
+                <a href="#about" class="btn btn-outline">Tìm Hiểu Thêm</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ POSTER 2 — FULL: Special Offer ══ -->
+    <section class="poster-full">
+        <div class="poster-full-inner">
+            <span class="poster-eyebrow">🔥 Ưu Đãi Đặc Biệt</span>
+            <h2 class="poster-title">Combo Gia Đình<br><em>Cuối Tuần</em></h2>
+            <p class="poster-body">Thứ 7 & Chủ Nhật hàng tuần — Đặt trước combo gia đình từ 4 người, giảm ngay <strong style="color:var(--gold)">10%</strong> toàn bộ hoá đơn. Kèm nước uống miễn phí và món tráng miệng đặc biệt.</p>
+            <div class="poster-full-actions">
+                <a href="order.html" class="btn">Đặt Combo Ngay</a>
+                <a href="tel:0388611883" class="btn btn-outline">Gọi Đặt Bàn</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FEATURES ══ -->
+    <section class="features-section">
+        <div class="container">
+            <div class="features-header">
+                <div class="section-tag" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:0.75rem;">Tại Sao Chọn Chúng Tôi</div>
+                <h2 class="section-title">Cam Kết <em>Chất Lượng</em></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🐟</span>
+                    <h3>Nguyên Liệu Tươi Sống</h3>
+                    <p>100% Thực phẩm và nguyên liệu nhập thẳng từ ngư dân địa phương mỗi sáng sớm. Cam kết không dùng hàng đông lạnh trong các món chính.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">👨‍🍳</span>
+                    <h3>Bếp Trưởng 20 Năm Kinh Nghiệm</h3>
+                    <p>Đội ngũ đầu bếp lành nghề với công thức gia truyền được gìn giữ qua nhiều thế hệ, kết hợp sáng tạo hiện đại.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏮</span>
+                    <h3>Không Gian Ấm Cúng</h3>
+                    <p>Phòng riêng cho nhóm, khu màn hình lớn dành cho các nhóm sự kiên công ty lớn, phòng VIP cho sự kiện — sức chứa lên đến 200 khách.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🛵</span>
+                    <h3>Giao Hàng Nhanh</h3>
+                    <p>Freeship nội thành Sơn Tây cho đơn từ 200.000₫. Thời gian giao hàng trung bình 30–45 phút. Đặt qua website hoặc điện thoại.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💳</span>
+                    <h3>Thanh Toán Linh Hoạt</h3>
+                    <p>Chấp nhận tiền mặt, chuyển khoản, MOMO, ZaloPay, VISA/Mastercard. Xuất hoá đơn VAT theo yêu cầu.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⭐</span>
+                    <h3>Đánh Giá 4.5/5 Sao</h3>
+                    <p>Được nhiều người biết đến và ghé qua từ trên Google Maps và Facebook. Được nhiều vị khách ăn và đánh giá tốt trongnăm 2025–2026.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ POSTER 3 — BANNER: Order CTA ══ -->
+    <section class="poster-banner">
+        <div class="poster-banner-bg"></div>
+        <div class="container poster-banner-content">
+            <div class="poster-banner-copy">
+                <div class="poster-eyebrow">✦ Đặt Hàng Trực Tuyến</div>
+                <h2 class="poster-title">Thưởng Thức Tại Nhà — <em>Dễ Như Ăn Cá</em></h2>
+                <p class="poster-body">Chọn món từ thực đơn online, đặt hàng trong vài giây, nhận ngay tại bàn hoặc giao tận nơi. Tích điểm thành viên cho mỗi đơn hàng.</p>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                    <a href="menu.html" class="btn">Xem Thực Đơn</a>
+                    <a href="drinks.html" class="btn btn-outline">Đồ Uống</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ ABOUT ══ -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-img-stack">
+                    <div class="about-img-main">
+                        <img src="/images/599605271_122112758265076556_4276876697300667532_n.jpg"
+                            alt="Nhà hàng Hoả Ngư Quán"
+                            onerror="this.style.background='var(--surface)'">
+                    </div>
+                    <div class="about-img-accent">
+                        <div class="num">2025</div>
+                        <div class="num-label">Năm thành lập</div>
+                        <div style="margin-top:1rem;font-size:0.78rem;color:var(--text-muted);line-height:1.6;">Kinh nghiệm tốt phục vụ người dân Sơn Tây và khách thập phương.</div>
+                    </div>
+                </div>
+                <div class="about-copy">
+                    <span class="section-tag">✦ Về Chúng Tôi</span>
+                    <h2>Gia vị <em>truyền thống</em>, tâm hồn <em>hiện đại</em></h2>
+                    <p>Hoả Ngư Quán được thành lập cuối năm 2025 bởi đại gia chân đất Nguyễn Hữu Hiếu — khởi đầu từ một quán nhỏ dưới Hòa Lạc với chỉ bằng phong cách đơn giản.</p>
+                    <p>Qua nhiều lần rút kinh nghiệm, chúng tôi không ngừng hoàn thiện công thức và mở rộng thực đơn, nhưng luôn giữ vững triết lý cốt lõi: <em style="color:var(--gold)">nguyên liệu tươi sống — chế biến tỉ mỉ — phục vụ tận tâm.</em></p>
+                    <p>Hiện tại nhà hàng do vẫn do anh Hiếu quản lý, với sức chứa hơn 200 khách và đội ngũ với nhiều nhân viên nhiệt huyết.</p>
+                    <div class="about-values">
+                        <div class="about-val">
+                            <strong>Nguyên Liệu</strong>
+                            <span>Nhập trực tiếp mỗi sáng từ nguồn đáng tin cậy</span>
+                        </div>
+                        <div class="about-val">
+                            <strong>Công Thức</strong>
+                            <span>Gia truyền, không ngừng cải tiến</span>
+                        </div>
+                        <div class="about-val">
+                            <strong>Phục Vụ</strong>
+                            <span>Tận tâm, nhanh chóng, chu đáo từng chi tiết</span>
+                        </div>
+                        <div class="about-val">
+                            <strong>Không Gian</strong>
+                            <span>Ấm cúng, sạch sẽ, phù hợp mọi dịp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ INFO ══ -->
+    <section id="info" class="info-section">
+        <div class="container">
+            <div style="text-align:center;margin-bottom:4rem;">
+                <span class="section-tag" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:0.75rem;">Thông Tin Quán</span>
+                <h2 class="section-title">Ghé Thăm <em>Chúng Tôi</em></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="info-grid">
+                <div class="info-left">
+                    <span class="section-tag">📍 Địa Chỉ & Liên Hệ</span>
+                    <h2>Đến gặp chúng tôi <em>tại đây</em></h2>
+                    <p>Nhà hàng Hoả Ngư Quán toạ lạc tại khu vực trung tâm nơi giao thoa của bản sắc ẩm thực Sơn Tây, Hà Nội — dễ dàng tìm kiếm và di chuyển từ mọi hướng đều có thể đến được nhà hàng.</p>
+                    <p>Có bãi đỗ xe rộng rãi cho cả xe máy và ô tô. Nhà hàng nằm sát trục đường chính, thuận tiện cho cả khách đến ăn lẫn khách giao hàng.</p>
+
+                    <div class="info-details">
+                        <div class="info-row">
+                            <div class="info-row-label">📍 Địa chỉ</div>
+                            <div class="info-row-val">Đường Trung Sơn Trầm, Phường Tùng Thiện, Sơn Tây, Hà Nội</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-row-label">📞 Điện thoại</div>
+                            <div class="info-row-val"><a href="tel:0388611883" style="color:var(--gold);text-decoration:none;">0388 611 883</a></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-row-label">📘 Facebook</div>
+                            <div class="info-row-val"><a href="https://www.facebook.com/profile.php?id=61582296692992" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:none;">Hoả Ngư Quán</a></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-row-label">📱 Zalo</div>
+                            <div class="info-row-val"><a href="https://zalo.me/0388611883" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:none;">0388 611 883</a></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-row-label">🕒 Giờ mở cửa</div>
+                            <div class="info-row-val">09:00 – 22:00 (mỗi ngày)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-row-label">👨‍💼 Chủ quán</div>
+                            <div class="info-row-val">Anh Hiếu — <a href="tel:0388611883" style="color:var(--gold);text-decoration:none;">0388 611 883</a></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:1.5rem;">
+                        <div class="map-wrapper">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2902.8203483249417!2d105.49648662138583!3d21.100072914864064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345f0f44eba78d%3A0x69415b62606a2657!2zSOG7j2EgTmfGsCBRdcOhbg!5e1!3m2!1svi!2s!4v1774167637768!5m2!1svi!2s"
+                                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-right">
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-icon">🕒</span>
+                            <span class="info-card-title">Giờ Mở Cửa</span>
+                        </div>
+                        <div class="hours-grid">
+                            <div class="hour-row"><span class="day">Thứ 2</span><span class="time">09:00 – 22:00</span></div>
+                            <div class="hour-row"><span class="day">Thứ 3</span><span class="time">09:00 – 22:00</span></div>
+                            <div class="hour-row"><span class="day">Thứ 4</span><span class="time">09:00 – 22:00</span></div>
+                            <div class="hour-row"><span class="day">Thứ 5</span><span class="time">09:00 – 22:00</span></div>
+                            <div class="hour-row"><span class="day">Thứ 6</span><span class="time">09:00 – 22:30</span></div>
+                            <div class="hour-row today"><span class="day">Thứ 7 ★</span><span class="time">08:30 – 23:00</span></div>
+                            <div class="hour-row today"><span class="day">Chủ Nhật ★</span><span class="time">08:30 – 23:00</span></div>
+                        </div>
+                        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;font-family:'DM Mono',monospace;letter-spacing:0.04em;">★ Mở sớm và đóng muộn hơn cuối tuần</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-icon">🅿️</span>
+                            <span class="info-card-title">Chỗ Để Xe & Sức Chứa</span>
+                        </div>
+                        <p>Bãi xe máy miễn phí ngay trước cổng — sức chứa 80 xe. Bãi ô tô cách nhà hàng 100m, có bảo vệ trông giữ, an ninh chặt chẽ.</p>
+                        <p style="margin-top:0.5rem;">Sức chứa nhà hàng: <strong style="color:var(--gold)">200 khách</strong> — gồm phòng thường gần màn hình lớn phù hợp cho các sự kiện đông người và phòng VIP riêng.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-icon">🎉</span>
+                            <span class="info-card-title">Tổ Chức Sự Kiện</span>
+                        </div>
+                        <p>Hoả Ngư Quán nhận đặt tiệc sinh nhật, liên hoan, họp mặt gia đình, tiệc công ty từ 20 đến 200 khách.</p>
+                        <p style="margin-top:0.5rem;">Liên hệ trực tiếp để được báo giá và tư vấn thực đơn theo yêu cầu:<br>
+                            <a href="tel:0388611883">📞 0388 611 883</a> —
+                            <a href="https://zalo.me/0388611883" target="_blank">📱 Zalo</a>
+                        </p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-head">
+                            <span class="info-card-icon">🚗</span>
+                            <span class="info-card-title">Hướng Dẫn Đường Đi</span>
+                        </div>
+                        <p>Từ trung tâm Sơn Tây: đi theo đường Phố Chùa Thông về phía Viện 105, rẽ trái vào đường Trung Sơn Trầm, nhà hàng nằm bên tay trái ở ngã tư Học Viện Phòng Không Không Quân.</p>
+                        <p style="margin-top:0.5rem;"><a href="https://maps.app.goo.gl/BHGhFWRLEsfYBhWu9" target="_blank" style="color:var(--gold);">Xem chỉ đường trên Google Maps →</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>Hoả Ngư Quán</h3>
+                <p>📍 Đường Trung Sơn Trầm, P. Tùng Thiện, Sơn Tây, Hà Nội</p>
+                <p>📞 Phone: <a href="tel:0388611883">0388 611 883</a></p>
+                <p>📧 Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5cdcac4cbc2d0d4d0c4cbe5c2c8c4ccc98bc6cac8">[<span class="__cf_email__" data-cfemail="d5bdbab4bbb2a0a4a0b4bb95b2b8b4bcb9fbb6bab8">[email&#160;protected]</span>]</a></p>
+                <p>🕒 Open: 09:00 AM – 10:00 PM</p>
+            </div>
+            <div class="footer-info">
+                <h3>Liên Hệ</h3>
+                <p:>Chủ quán: Anh Hiếu — 0388 611 883</p>
+                <p:>Quản lý: Chị Nga — 0123 456 787</p>
+                <p>📘 <a href="https://www.facebook.com/profile.php?id=61582296692992" target="_blank" rel="noopener noreferrer">Facebook: Hoả Ngư Quán</a></p>
+                <p>📱 <a href="https://zalo.me/0388611883" target="_blank" rel="noopener noreferrer">Zalo: 0388 611 883</a></p>
+            </div>
+            <div class="footer-info">
+                <h3>Vị Trí</h3>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2902.8203483249417!2d105.49648662138583!3d21.100072914864064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345f0f44eba78d%3A0x69415b62606a2657!2zSOG7j2EgTmfGsCBRdcOhbg!5e1!3m2!1svi!2s!4v1774167637768!5m2!1svi!2s"
+                            allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:1.5rem;text-align:center;font-size:0.75rem;color:var(--text-muted);font-family:'DM Mono',monospace;letter-spacing:0.08em;">
+            © 2026 Hoả Ngư Quán — Tươi từ biển, thơm đến bàn - Design by Bachdx
+        </div>
+    </div>
+</footer>
+
+<!-- ══ ACCOUNT SIDE PANEL ══ -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="account-panel" id="accountPanel" style="display:none;">
+    <div class="panel-top">
+        <div class="panel-logo">HOẢ NGƯ QUÁN</div>
+        <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+
+        <!-- CHOOSE VIEW -->
+        <div class="auth-view visible" id="viewChoose">
+            <div class="auth-title">Chào <em>Mừng</em></div>
+            <div class="auth-sub">Bạn muốn đăng nhập với tư cách nào?</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem;">
+                <button class="auth-btn" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:0;" onclick="showView('viewLogin')">
+                    <span style="font-size:1.2rem;">👤</span> Tài Khoản Khách Hàng
+                </button>
+                <button class="auth-btn" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;background:var(--surface);color:var(--gold);border:1px solid var(--border2);margin-bottom:0;" onclick="window.location.href='manager.html'">
+                    <span style="font-size:1.2rem;">🔐</span> Đăng Nhập Manager
+                </button>
+            </div>
+            <div style="margin-top:2rem;padding:1rem;background:rgba(232,184,75,0.04);border:1px solid var(--border);border-radius:2px;font-size:0.78rem;color:var(--text-muted);line-height:1.7;">
+                👤 <strong style="color:var(--text);">Khách hàng</strong> — Xem đơn hàng, đặt bàn, tích điểm<br>
+                🔐 <strong style="color:var(--text);">Manager</strong> — Quản lý nhà hàng, đơn hàng, doanh thu
+            </div>
+        </div>
+
+        <!-- LOGIN VIEW -->
+        <div class="auth-view" id="viewLogin">
+            <button onclick="showView('viewChoose')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;margin-bottom:1.25rem;padding:0;display:flex;align-items:center;gap:0.4rem;">← QUAY LẠI</button>
+            <div class="auth-title">Đăng <em>Nhập</em></div>
+            <div class="auth-sub">Tài khoản khách hàng</div>
+
+            <div class="field-group">
+                <label>Email hoặc Số điện thoại</label>
+                <input type="text" id="loginEmail" placeholder="Nhập email hoặc SĐT...">
+            </div>
+            <div class="field-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="loginPass" placeholder="••••••••"
+                        onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="auth-btn" onclick="doLogin()">Đăng Nhập →</button>
+
+            <div class="auth-divider">Hoặc đăng nhập với</div>
+            <div class="social-row">
+                <button class="social-btn google-btn" onclick="doSocialLogin('google')">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Google
+                </button>
+                <button class="social-btn fb-btn" onclick="doSocialLogin('facebook')">
+                    📘 Facebook
+                </button>
+            </div>
+
+            <div class="auth-switch">
+                Chưa có tài khoản? <a href="#" onclick="showView('viewSignup');return false;">Đăng ký ngay</a>
+            </div>
+        </div>
+
+        <!-- MANAGER LOGIN VIEW -->
+        <div class="auth-view" id="viewManagerLogin">
+            <button onclick="showView('viewChoose')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;margin-bottom:1.25rem;padding:0;display:flex;align-items:center;gap:0.4rem;">← QUAY LẠI</button>
+            <div class="auth-title">Manager <em>Portal</em></div>
+            <div class="auth-sub">Dành cho nhân viên & quản lý</div>
+            <div class="field-group">
+                <label>Tên đăng nhập</label>
+                <input type="text" id="mgLoginUser" placeholder="manager hoặc owner" autocomplete="username">
+            </div>
+            <div class="field-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="mgLoginPass" placeholder="••••••••"
+                       onkeydown="if(event.key==='Enter') doManagerLogin()">
+            </div>
+            <div id="mgLoginError" style="display:none;background:rgba(224,82,82,0.1);border:1px solid rgba(224,82,82,0.3);border-radius:2px;padding:0.7rem 1rem;font-size:0.82rem;color:#ff8a8a;margin-bottom:1rem;">❌ Sai tên đăng nhập hoặc mật khẩu!</div>
+            <button class="auth-btn" style="background:linear-gradient(135deg,#ffc400,#ff6b00);color:#1a1200;" onclick="doManagerLogin()">Vào Manager →</button>
+            <div style="margin-top:1rem;padding:0.85rem;background:rgba(232,184,75,0.04);border:1px solid var(--border);border-radius:2px;font-size:0.75rem;color:var(--text-muted);line-height:1.7;">
+                👨‍💼 <strong style="color:var(--gold);">manager</strong> / manager123<br>
+                👑 <strong style="color:var(--gold);">owner</strong> / owner123
+            </div>
+        </div>
+
+        <!-- SIGNUP VIEW -->
+        <div class="auth-view" id="viewSignup">
+            <div class="auth-title">Tạo <em>Tài Khoản</em></div>
+            <div class="auth-sub">Tham gia để tích điểm & ưu đãi riêng</div>
+
+            <div class="field-group">
+                <label>Họ và Tên</label>
+                <input type="text" id="regName" placeholder="Nguyễn Văn A...">
+            </div>
+            <div class="field-group">
+                <label>Số Điện Thoại</label>
+                <input type="tel" id="regPhone" placeholder="0xxx xxx xxx">
+            </div>
+            <div class="field-group">
+                <label>Gmail</label>
+                <input type="email" id="regEmail" placeholder="example@gmail.com">
+            </div>
+            <div class="field-group">
+                <label>Địa Chỉ</label>
+                <input type="text" id="regAddress" placeholder="Số nhà, đường, phường...">
+            </div>
+            <div class="field-group">
+                <label>Mật Khẩu</label>
+                <input type="password" id="regPass" placeholder="Tạo mật khẩu...">
+            </div>
+            <button class="auth-btn" onclick="doSignup()">Tạo Tài Khoản →</button>
+
+            <div class="auth-switch">
+                Đã có tài khoản? <a href="#" onclick="showView('viewLogin');return false;">Đăng nhập</a>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div class="auth-view" id="viewDashboard">
+            <div class="dash-user">
+                <div class="dash-avatar" id="dashAvatar">K</div>
+                <div>
+                    <div class="dash-name" id="dashName">Khách</div>
+                    <div class="dash-email" id="dashEmail">—</div>
+                </div>
+            </div>
+
+            <div class="dash-tabs">
+                <button class="dash-tab active" onclick="switchDashTab('orders',this)">Đơn Hàng</button>
+                <button class="dash-tab" onclick="switchDashTab('reservations',this)">Đặt Bàn</button>
+                <button class="dash-tab" onclick="switchDashTab('history',this)">Lịch Sử</button>
+            </div>
+
+            <div class="dash-tab-pane active" id="dtab-orders">
+                <div class="dash-section-title">Đơn Hàng Của Tôi</div>
+                <div id="dashOrders"></div>
+                <a href="order.html" class="new-res-btn" style="display:block;text-align:center;text-decoration:none;">+ Đặt Món Mới</a>
+            </div>
+
+            <div class="dash-tab-pane" id="dtab-reservations">
+                <div class="dash-section-title">Đặt Bàn Của Tôi</div>
+                <div id="dashReservations"></div>
+                <button class="new-res-btn" onclick="doNewReservation()">+ Đặt Bàn Mới</button>
+            </div>
+
+            <div class="dash-tab-pane" id="dtab-history">
+                <div class="dash-section-title">Lịch Sử Đăng Nhập</div>
+                <div id="dashHistory"></div>
+            </div>
+
+            <button class="logout-link" onclick="doLogout()">← Đăng Xuất</button>
+        </div>
+
+    </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="api-client.js"></script>
+<script>
+    /* ── STATE ── */
+    let currentUser = null;
+    // Khôi phục session khi trang reload
+    try {
+        const _s = localStorage.getItem('hnq_session');
+        if (_s) currentUser = JSON.parse(_s);
+    } catch(e) { currentUser = null; }
+
+    /* ── PANEL OPEN/CLOSE ── */
+    function openPanel() {
+        document.getElementById('accountPanel').style.display = 'flex';
+        document.getElementById('accountPanel').style.flexDirection = 'column';
+        document.getElementById('panelOverlay').classList.add('open');
+        if (currentUser) showView('viewDashboard');
+        else showView('viewChoose');
+    }
+    function closePanel() {
+        document.getElementById('accountPanel').style.display = 'none';
+        document.getElementById('panelOverlay').classList.remove('open');
+    }
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closePanel(); });
+
+    /* ── VIEW SWITCHER ── */
+    function showView(id) {
+        document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('visible'));
+        document.getElementById(id).classList.add('visible');
+        if (id === 'viewDashboard') loadDashboard();
+    }
+
+    /* ── MANAGER LOGIN FROM PANEL ── */
+    const MANAGER_ACCOUNTS = {
+        manager: { password:'manager123', name:'Anh Hiếu', role:'Chủ Nhà Hàng', avatar:'H' },
+        owner:   { password:'owner123',   name:'Chị Nga',  role:'Quản Lí Ca',   avatar:'N' }
+    };
+    async function doManagerLogin() {
+        const u = document.getElementById('mgLoginUser').value.trim().toLowerCase();
+        const p = document.getElementById('mgLoginPass').value;
+        const err = document.getElementById('mgLoginError');
+        const btn = document.querySelector('[onclick="doManagerLogin()"]');
+
+        // Thử API trước, fallback sang local accounts
+        let ok = false;
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang đăng nhập...'; }
+        try {
+            await loginWithDB(u, p);
+            ok = true;
+        } catch(e) {
+            // fallback local
+            const acc = MANAGER_ACCOUNTS[u];
+            ok = acc && acc.password === p;
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Vào Manager →'; }
+
+        if (ok) {
+            err.style.display = 'none';
+            closePanel();
+            window.location.href = 'manager.html';
+        } else {
+            err.style.display = 'block';
+            document.getElementById('mgLoginPass').value = '';
+        }
+    }
+
+    /* ── AUTH ── */
+    async function doLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass  = document.getElementById('loginPass').value;
+        if (!email || !pass) { alert('Vui lòng nhập đầy đủ thông tin.'); return; }
+        const btn = document.querySelector('[onclick="doLogin()"]');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang đăng nhập...'; }
+        try {
+            const data = await apiFetch('/customer/login', {
+                method: 'POST',
+                body: JSON.stringify({ email })
+            });
+            currentUser = { ...data };
+            localStorage.setItem('hnq_session', JSON.stringify(currentUser));
+            saveLoginHistory(email);
+            showView('viewDashboard');
+        } catch(e) {
+            alert('❌ ' + e.message);
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'Đăng Nhập'; }
+        }
+    }
+
+    async function doSignup() {
+        const name    = document.getElementById('regName').value.trim();
+        const phone   = document.getElementById('regPhone').value.trim();
+        const email   = document.getElementById('regEmail').value.trim();
+        const address = document.getElementById('regAddress').value.trim();
+        const pass    = document.getElementById('regPass').value;
+        if (!name || !phone || !email || !address || !pass) {
+            alert('Vui lòng điền đầy đủ thông tin.'); return;
+        }
+        const btn = document.querySelector('[onclick="doSignup()"]');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang đăng ký...'; }
+        try {
+            const data = await apiFetch('/customer/register', {
+                method: 'POST',
+                body: JSON.stringify({ name, phone, email, address, password: pass })
+            });
+            currentUser = { ...data };
+            localStorage.setItem('hnq_session', JSON.stringify(currentUser));
+            saveLoginHistory(email);
+            showView('viewDashboard');
+        } catch(e) {
+            alert('❌ ' + e.message);
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'Đăng Ký'; }
+        }
+    }
+
+    // ── GOOGLE OAUTH ──
+    function initGoogleSignIn() {
+        if (typeof google === 'undefined') return;
+        google.accounts.id.initialize({
+            client_id: '249258031264-kc2h7uoodcqvbic3i2evb6iob1kiifb1.apps.googleusercontent.com',
+            callback: handleGoogleResponse,
+            auto_select: false,
+        });
+    }
+
+    // Decode base64url → UTF-8 đúng (fix tên tiếng Việt bị lỗi ký tự)
+    function _b64DecodeUnicode(b64) {
+        const bin = atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+        return decodeURIComponent(
+            bin.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+    }
+
+    function handleGoogleResponse(response) {
+        try {
+            const base64  = response.credential.split('.')[1];
+            const payload = JSON.parse(_b64DecodeUnicode(base64));
+            const user = {
+                name:     payload.name || payload.given_name || 'Google User',
+                email:    payload.email || '',
+                avatar:   payload.picture || '',
+                provider: 'google',
+                role:     'customer',
+            };
+            _finishSocialLogin(user);
+        } catch(e) {
+            alert('❌ Đăng nhập Google thất bại');
+        }
+    }
+
+    function doSocialLogin(provider) {
+        if (provider === 'google') {
+            if (typeof google === 'undefined') {
+                alert('Trình duyệt chưa tải được Google SDK. Vui lòng thử lại hoặc tắt adblocker.');
+                return;
+            }
+            google.accounts.id.prompt(notification => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // Fallback: mở popup OAuth
+                    google.accounts.id.renderButton(
+                        document.createElement('div'),
+                        { theme: 'outline', size: 'large' }
+                    );
+                    google.accounts.id.prompt();
+                }
+            });
+        } else if (provider === 'facebook') {
+            if (typeof FB === 'undefined') {
+                alert('Trình duyệt chưa tải được Facebook SDK. Vui lòng thử lại hoặc tắt adblocker.');
+                return;
+            }
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    FB.api('/me', { fields: 'name,email,picture' }, function(data) {
+                        const user = {
+                            name:     data.name  || 'Facebook User',
+                            email:    data.email || (data.id + '@facebook.com'),
+                            avatar:   data.picture?.data?.url || '',
+                            provider: 'facebook',
+                            role:     'customer',
+                        };
+                        _finishSocialLogin(user);
+                    });
+                } else {
+                    alert('❌ Đăng nhập Facebook bị huỷ', 'warning');
+                }
+            }, { scope: 'public_profile,email' });
+        }
+    }
+
+    async function _finishSocialLogin(user) {
+        try {
+            // Gọi endpoint upsert: tìm hoặc tạo tài khoản bằng email OAuth
+            const data = await apiFetch('/customer/social-login', {
+                method: 'POST',
+                body: JSON.stringify({ name: user.name, email: user.email, provider: user.provider }),
+            });
+            currentUser = { ...data, name: user.name, avatar: user.avatar, provider: user.provider };
+        } catch(e) {
+            // Fallback offline nếu server không có endpoint (tương thích ngược)
+            currentUser = { ...user, customerId: null };
+        }
+        saveLoginHistory(currentUser.email);
+        localStorage.setItem('hnq_session', JSON.stringify(currentUser));
+        showView('viewDashboard');
+        loadDashboard();
+    }
+
+    // Khởi tạo Google SDK sau khi trang load xong
+    window.addEventListener('load', () => { setTimeout(initGoogleSignIn, 500); });
+
+    function doLogout() {
+        currentUser = null;
+        localStorage.removeItem('hnq_session');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPass').value  = '';
+        showView('viewChoose');
+    }
+
+    /* ── DASHBOARD ── */
+    function loadDashboard() {
+        if (!currentUser) return;
+        const name  = currentUser.name || 'Khách';
+        const parts = name.trim().split(/\s+/);
+        const initial = parts[parts.length - 1][0].toUpperCase();
+        document.getElementById('dashName').textContent   = name;
+        document.getElementById('dashEmail').textContent  = currentUser.email || '—';
+        document.getElementById('dashAvatar').textContent = initial;
+        loadDashOrders();
+        loadDashReservations();
+        loadDashHistory();
+    }
+
+    function fmt(n) {
+        const v = parseFloat(n) || 0;
+        return v >= 1000 ? v.toLocaleString('vi-VN') + ' ₫' : '$' + v.toFixed(2);
+    }
+
+    async function loadDashOrders() {
+        const el = document.getElementById('dashOrders');
+        if (!currentUser || !currentUser.customerId) {
+            el.innerHTML = '<div class="dash-empty"><span>🍽</span>Chưa có đơn hàng nào</div>';
+            return;
+        }
+        el.innerHTML = '<div class="dash-empty"><span>⏳</span>Đang tải...</div>';
+        try {
+            const list = await apiFetch('/customer/' + currentUser.customerId + '/orders');
+            if (!list.length) {
+                el.innerHTML = '<div class="dash-empty"><span>🍽</span>Chưa có đơn hàng nào</div>';
+                return;
+            }
+            const STATUS_VI = { pending:'Chờ xác nhận', confirmed:'Đã xác nhận', preparing:'Đang làm', completed:'Hoàn thành', cancelled:'Đã huỷ' };
+            el.innerHTML = list.map(o => `
+                <div class="order-mini">
+                    <div class="order-mini-head">
+                        <span class="order-mini-name">#${String(o.id).slice(-6)}</span>
+                        <span class="order-mini-price">${Number(o.total).toLocaleString('vi-VN')} ₫</span>
+                    </div>
+                    <div class="order-mini-meta">${o.items || 'Đơn hàng'}</div>
+                    <span class="order-mini-status s-${o.status}">${STATUS_VI[o.status] || o.status}</span>
+                </div>`).join('');
+        } catch(e) {
+            el.innerHTML = '<div class="dash-empty"><span>🍽</span>Chưa có đơn hàng nào</div>';
+        }
+    }
+
+    async function loadDashReservations() {
+        const el = document.getElementById('dashReservations');
+        if (!currentUser || !currentUser.customerId) {
+            el.innerHTML = '<div class="dash-empty"><span>🪑</span>Chưa có đặt bàn nào</div>';
+            return;
+        }
+        el.innerHTML = '<div class="dash-empty"><span>⏳</span>Đang tải...</div>';
+        try {
+            const list = await apiFetch('/customer/' + currentUser.customerId + '/reservations');
+            if (!list.length) {
+                el.innerHTML = '<div class="dash-empty"><span>🪑</span>Chưa có đặt bàn nào</div>';
+                return;
+            }
+            const STATUS_VI = { pending:'Chờ xác nhận', confirmed:'Đã xác nhận', cancelled:'Đã huỷ', seated:'Đang phục vụ' };
+            el.innerHTML = list.map(r => `
+                <div class="res-mini">
+                    <div style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.3rem;">📅 ${r.date}</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);">👥 ${r.guests} khách</div>
+                    <span class="order-mini-status s-${r.status}">${STATUS_VI[r.status] || r.status}</span>
+                </div>`).join('');
+        } catch(e) {
+            el.innerHTML = '<div class="dash-empty"><span>🪑</span>Chưa có đặt bàn nào</div>';
+        }
+    }
+
+
+    function switchDashTab(id, btn) {
+        document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.dash-tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('dtab-' + id).classList.add('active');
+    }
+
+    async function doNewReservation() {
+        if (!currentUser) return;
+        const date   = prompt('Ngày đặt bàn (VD: 2025-08-15):');
+        const time   = prompt('Giờ đặt bàn (VD: 19:00):');
+        const guests = prompt('Số lượng khách:');
+        if (!date || !time || !guests) return;
+        try {
+            await apiFetch('/customer/reservation', {
+                method: 'POST',
+                body: JSON.stringify({
+                    customerId: currentUser.customerId || null,
+                    guestName:  currentUser.name,
+                    guestPhone: currentUser.phone || '0000000000',
+                    guestCount: parseInt(guests) || 2,
+                    date: date.trim(),
+                    time: time.trim(),
+                    note: 'Dat qua website'
+                })
+            });
+            alert('✅ Đặt bàn thành công! Chúng tôi sẽ xác nhận sớm nhất.');
+            loadDashReservations();
+        } catch(e) {
+            alert('❌ Lỗi đặt bàn: ' + e.message);
+        }
+    }
+
+    /* ── HISTORY — lưu riêng theo từng tài khoản ── */
+    function saveLoginHistory(email) {
+        // Key riêng theo email để không bị lẫn lịch sử giữa các tài khoản
+        const key  = 'loginHistory_' + btoa(email).replace(/[^a-z0-9]/gi,'');
+        const hist = JSON.parse(localStorage.getItem(key) || '[]');
+        hist.push({ email, timestamp: new Date().toISOString() });
+        // Chỉ giữ 20 mục gần nhất
+        if (hist.length > 20) hist.splice(0, hist.length - 20);
+        localStorage.setItem(key, JSON.stringify(hist));
+    }
+
+    function loadDashHistory() {
+        const el = document.getElementById('dashHistory');
+        if (!currentUser || !currentUser.email) {
+            el.innerHTML = '<div class="dash-empty"><span>🕓</span>Chưa có lịch sử</div>';
+            return;
+        }
+        const key  = 'loginHistory_' + btoa(currentUser.email).replace(/[^a-z0-9]/gi,'');
+        const hist = JSON.parse(localStorage.getItem(key) || '[]');
+        if (!hist.length) {
+            el.innerHTML = '<div class="dash-empty"><span>🕓</span>Chưa có lịch sử đăng nhập</div>';
+            return;
+        }
+        el.innerHTML = hist.slice().reverse().slice(0, 10).map(h => {
+            const d = new Date(h.timestamp);
+            return `<div class="history-item">🔑 ${d.toLocaleString('vi-VN')}</div>`;
+        }).join('');
+    }
+
+    /* ── HERO SCROLL ── */
+    function scrollToSection(id) {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ── HIGHLIGHT TODAY ── */
+    document.addEventListener('DOMContentLoaded', () => {
+        const days = ['Chủ Nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'];
+        const today = days[new Date().getDay()];
+        document.querySelectorAll('.hour-row .day').forEach(el => {
+            if (el.textContent.includes(today.replace(' ★',''))) {
+                el.closest('.hour-row').classList.add('today');
+            }
+        });
+    });
+</script>
+<style>
+/* ── Nút toggle góc dưới phải ── */
+#chatbot-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: #e8b84b;          /* màu vàng gold của quán */
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(232,184,75,0.4);
+    z-index: 9999;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+#chatbot-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(232,184,75,0.55);
+}
+#chatbot-toggle.open svg { transform: rotate(45deg); transition: transform 0.3s; }
+
+/* ── Chấm đỏ nhấp nháy ── */
+#chatbot-badge {
+    position: absolute; top: 2px; right: 2px;
+    width: 14px; height: 14px;
+    background: #e55;
+    border-radius: 50%;
+    border: 2px solid #0c0b09;
+    display: none;
+    animation: pulseBadge 1.8s ease-in-out infinite;
+}
+@keyframes pulseBadge {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.3); }
+}
+
+/* ── Cửa sổ chat ── */
+#chatbot-window {
+    position: fixed;
+    bottom: 6.5rem;       /* nằm ngay phía trên nút toggle */
+    right: 2rem;
+    width: 360px;
+    max-height: 520px;
+    background: #131210;
+    border: 1px solid rgba(232,184,75,0.25);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    z-index: 9998;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+    /* mặc định ẩn */
+    transform: translateY(12px) scale(0.97);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    overflow: hidden;
+}
+#chatbot-window.open {       /* khi mở thêm class .open */
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0) scale(1);
+}
+
+/* ── Header ── */
+.cb-header {
+    background: #1a1814;
+    border-bottom: 1px solid rgba(232,184,75,0.18);
+    padding: 0.9rem 1.1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.cb-avatar {
+    width: 36px; height: 36px;
+    background: #e8b84b;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+.cb-header-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; font-weight: 700; color: #f0ece4;
+}
+.cb-header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.1em; color: #e8b84b;
+}
+.cb-close {
+    background: none; border: none;
+    color: rgba(240,236,228,0.4);
+    cursor: pointer; font-size: 1.2rem; margin-left: auto;
+    transition: color 0.2s;
+}
+.cb-close:hover { color: #f0ece4; }
+
+/* ── Vùng tin nhắn ── */
+.cb-messages {
+    flex: 1; overflow-y: auto;
+    padding: 1rem;
+    display: flex; flex-direction: column; gap: 0.65rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(232,184,75,0.2) transparent;
+}
+.cb-msg {
+    max-width: 82%;
+    font-size: 0.83rem; line-height: 1.55;
+    padding: 0.65rem 0.9rem;
+    border-radius: 4px;
+    animation: msgIn 0.2s ease;
+}
+@keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+.cb-msg.bot {           /* tin nhắn bot — trái */
+    background: #1e1c18;
+    border: 1px solid rgba(232,184,75,0.12);
+    color: #c8c0b0;
+    align-self: flex-start;
+}
+.cb-msg.user {          /* tin nhắn user — phải */
+    background: #e8b84b;
+    color: #0c0b09;
+    font-weight: 600;
+    align-self: flex-end;
+}
+
+/* ── Typing indicator ── */
+.cb-typing {
+    display: flex; gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: #1e1c18;
+    border: 1px solid rgba(232,184,75,0.12);
+    border-radius: 4px;
+    width: fit-content; align-self: flex-start;
+}
+.cb-typing span {
+    width: 6px; height: 6px;
+    background: rgba(232,184,75,0.5);
+    border-radius: 50%;
+    animation: typingDot 1.2s ease-in-out infinite;
+}
+.cb-typing span:nth-child(2) { animation-delay: 0.2s; }
+.cb-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+    0%,60%,100% { transform:translateY(0); opacity:0.4; }
+    30%          { transform:translateY(-5px); opacity:1; }
+}
+
+/* ── Quick reply buttons ── */
+.cb-quick {
+    padding: 0 1rem 0.6rem;
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.cb-qbtn {
+    background: transparent;
+    border: 1px solid rgba(232,184,75,0.3);
+    color: #e8b84b;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.05em;
+    padding: 0.35rem 0.7rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.cb-qbtn:hover { background: rgba(232,184,75,0.12); color: #f0ece4; }
+
+/* ── Ô nhập liệu ── */
+.cb-input-bar {
+    border-top: 1px solid rgba(232,184,75,0.15);
+    padding: 0.75rem 1rem;
+    display: flex; gap: 0.5rem;
+    background: #131210;
+}
+.cb-input {
+    flex: 1;
+    background: #1a1814;
+    border: 1px solid rgba(232,184,75,0.2);
+    border-radius: 3px;
+    color: #f0ece4;
+    font-size: 0.83rem;
+    padding: 0.55rem 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.cb-input:focus { border-color: rgba(232,184,75,0.5); }
+.cb-send {
+    width: 36px; height: 36px;
+    background: #e8b84b;
+    border: none; border-radius: 3px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s;
+}
+.cb-send:hover { opacity: 0.85; }
+.cb-send svg { width: 16px; height: 16px; fill: #0c0b09; }
+</style>
+<!-- Nút mở chat -->
+<button id="chatbot-toggle" onclick="toggleChat()" aria-label="Mở chat">
+    <div id="chatbot-badge"></div>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="#0c0b09" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+</button>
+
+<!-- Cửa sổ chat -->
+<div id="chatbot-window">
+
+    <!-- Header -->
+    <div class="cb-header">
+        <div class="cb-avatar">🐟</div>
+        <div>
+            <div class="cb-header-name">Hoả Ngư Quán</div>
+            <div class="cb-header-sub">● Hỗ trợ trực tuyến</div>
+        </div>
+        <button class="cb-close" onclick="toggleChat()">✕</button>
+    </div>
+
+    <!-- Tin nhắn -->
+    <div class="cb-messages" id="cbMessages"></div>
+
+    <!-- Quick reply -->
+    <div class="cb-quick" id="cbQuick"></div>
+
+    <!-- Input -->
+    <div class="cb-input-bar">
+        <input class="cb-input" id="cbInput" type="text"
+                placeholder="Nhắn tin cho chúng tôi…"
+                onkeydown="if(event.key==='Enter') sendChat()">
+        <button class="cb-send" onclick="sendChat()">
+            <svg viewBox="0 0 24 24">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+        </button>
+    </div>
+
+</div>
+<script>
+(function () {
+    /* ── Kho câu trả lời ── */
+    const KB = [
+        {
+            keys: ['giờ','mở cửa','đóng cửa','hours','time'],
+            reply: '🕐 Giờ mở cửa:\n• Thứ 2–6: 10:00–22:00\n• T7–CN: 09:00–23:00'
+        },
+        {
+            keys: ['địa chỉ','ở đâu','address','đường'],
+            reply: '📍 Đường Trung Sơn Trầm, Phường Tùng Thiện, Sơn Tây, Hà Nội.\nBãi đỗ xe miễn phí!'
+        },
+        {
+            keys: ['menu','thực đơn','món ăn','food'],
+            reply: '🍽 Chuyên: Hải sản nướng & hấp, Cá lăng om chuối,\nLẩu hải sản, Gỏi cá kiểu Nhật.\nXem đầy đủ tại trang Thực Đơn!'
+        },
+        {
+            keys: ['đặt bàn','reservation','book','bàn'],
+            reply: '📋 Đặt bàn qua:\n• Nút "Đặt Bàn" ở menu trên\n• Hotline: 0388 611 883\n\nBạn muốn đặt cho mấy người?'
+        },
+        {
+            keys: ['giá','price','bao nhiêu','tiền'],
+            reply: '💰 Tham khảo:\n• Khai vị: 50k–120k\n• Món chính: 150k–450k\n• Lẩu (2-4 người): 350k–650k'
+        },
+        {
+            keys: ['wifi','password','mật khẩu'],
+            reply: '📶 WiFi: HoaNguQuan\nMật khẩu: hoanguc2024'
+        },
+        {
+            keys: ['điện thoại','phone','hotline','liên hệ','sdt'],
+            reply: '📞 Hotline: 0388 611 883\nZalo: 0388 611 883\nEmail: info@hoanguquan.vn'
+        },
+        {
+            keys: ['khuyến mãi','discount','ưu đãi','voucher','sale'],
+            reply: '🎁 Ưu đãi:\n• Nhóm 6+ người: giảm 15%\n• Happy Hour 14:00–17:00: giảm 10% đồ uống\n• Combo sinh nhật đặc biệt!'
+        },
+        {
+            keys: ['cảm ơn','thanks','tạm biệt','bye'],
+            reply: '🙏 Cảm ơn bạn! Hẹn gặp lại tại Hoả Ngư Quán nhé 🐟✨'
+        },
+    ];
+
+    const QUICK = ['Xem thực đơn 🍽', 'Đặt bàn 📋', 'Giờ mở cửa 🕐', 'Liên hệ 📞'];
+    let chatOpen = false, greeted = false;
+
+    /* ── Mở/đóng cửa sổ ── */
+    window.toggleChat = function () {
+        chatOpen = !chatOpen;
+        document.getElementById('chatbot-window').classList.toggle('open', chatOpen);
+        document.getElementById('chatbot-toggle').classList.toggle('open', chatOpen);
+        document.getElementById('chatbot-badge').style.display = 'none';
+
+        if (chatOpen && !greeted) {
+            greeted = true;
+            setTimeout(() =>
+                addMsg('bot', 'Xin chào! 👋 Tôi là trợ lý của <strong>Hoả Ngư Quán</strong>.\nBạn cần hỗ trợ gì?'), 300);
+            renderQuick();
+        }
+    };
+
+    /* ── Render nút gợi ý ── */
+    function renderQuick() {
+        document.getElementById('cbQuick').innerHTML =
+            QUICK.map(q => `<button class="cb-qbtn" onclick="handleQuick('${q}')">${q}</button>`).join('');
+    }
+
+    window.handleQuick = function (text) {
+        sendMsg(text.replace(/\s[\u{1F000}-\u{1FFFF}]/gu, '').trim());
+    };
+
+    /* ── Thêm tin nhắn vào màn hình ── */
+    function addMsg(type, text) {
+        const el  = document.getElementById('cbMessages');
+        const div = document.createElement('div');
+        div.className = 'cb-msg ' + type;
+        div.innerHTML  = text.replace(/\n/g, '<br>');
+        el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
+    }
+
+    /* ── Hiệu ứng đang gõ ── */
+    function showTyping() {
+        const el  = document.getElementById('cbMessages');
+        const div = document.createElement('div');
+        div.className = 'cb-typing'; div.id = 'cbTyping';
+        div.innerHTML  = '<span></span><span></span><span></span>';
+        el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
+    }
+    function removeTyping() { document.getElementById('cbTyping')?.remove(); }
+
+    /* ── Tìm câu trả lời ── */
+    function getBotReply(text) {
+        const norm = t => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const q = norm(text);
+        for (const entry of KB) {
+            if (entry.keys.some(k => q.includes(norm(k)))) return entry.reply;
+        }
+        return '😊 Để được hỗ trợ chi tiết, vui lòng gọi:\n📞 <strong>0904 xxx xxx</strong>\nhoặc nhắn Zalo cùng số trên!';
+    }
+
+    /* ── Gửi tin nhắn ── */
+    function sendMsg(text) {
+        if (!text.trim()) return;
+        addMsg('user', text);
+        document.getElementById('cbQuick').innerHTML = '';
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            addMsg('bot', getBotReply(text));
+            renderQuick();
+        }, 900 + Math.random() * 400);     /* delay giả lập bot đang nghĩ */
+    }
+
+    window.sendChat = function () {
+        const input = document.getElementById('cbInput');
+        const val   = input.value.trim();
+        if (!val) return;
+        input.value = '';
+        sendMsg(val);
+    };
+
+    /* ── Hiện badge sau 3s để mời người dùng ── */
+    setTimeout(() => {
+        if (!chatOpen) document.getElementById('chatbot-badge').style.display = 'block';
+    }, 3000);
+})();
+</script>
+<script>
+function toggleMenu() {
+    const nav = document.querySelector('nav');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+// Đóng menu khi click vào link
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('nav').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');  
+    });
+});
+</script>
+</body>
+</html>

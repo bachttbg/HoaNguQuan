@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đồ Uống - Hoả Ngư Quán</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <style>
+        /* ── PAGE HERO ── */
+        .page-hero {
+            position: relative;
+            height: 42vh; min-height: 320px;
+            display: flex; align-items: flex-end; justify-content: center;
+            text-align: center;
+            background-image:
+                linear-gradient(to bottom, rgba(12,11,9,0.2) 0%, rgba(12,11,9,0.85) 80%, var(--bg) 100%),
+                url('/images/drinks-hero.jpg');
+            background-size: cover;
+            background-position: center;
+            padding-bottom: 3.5rem;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 70%, rgba(232,184,75,0.07) 0%, transparent 70%);
+        }
+        .page-hero-content { position: relative; z-index: 1; }
+        .page-hero-tag {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--border2);
+            padding: 0.35rem 1.1rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+        .page-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            color: var(--text);
+        }
+        .page-hero h1 em { color: var(--gold); font-style: italic; }
+        .page-hero p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+        .filter-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+        .filter-btn {
+            padding: 0.45rem 1rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 2px;
+            cursor: pointer;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+        .filter-btn.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+
+        /* ── DRINKS SECTION ── */
+        .drinks-section { padding: 5rem 0 6rem; }
+
+        .category-block { margin-bottom: 5rem; }
+        .category-block:last-child { margin-bottom: 0; }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .category-header-line { flex: 1; height: 1px; background: var(--border); }
+        .category-title-wrap { text-align: center; }
+        .category-num {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.25em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .category-title em { color: var(--gold); font-style: italic; }
+
+        /* ── DRINK CARD ── */
+        .drinks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .drink-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(.22,1,.36,1),
+                        border-color 0.3s, box-shadow 0.35s;
+        }
+        .drink-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 0 0 1px rgba(232,184,75,0.1);
+        }
+        .drink-card-img {
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+        }
+        .drink-card-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .drink-card:hover .drink-card-img img { transform: scale(1.07); }
+        .drink-card-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(12,11,9,0.55) 0%, transparent 50%);
+        }
+        .drink-badge {
+            position: absolute;
+            top: 0.75rem; left: 0.75rem;
+            z-index: 2;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.22rem 0.6rem;
+            border-radius: 2px;
+        }
+        .badge-cold { background: rgba(74,158,255,0.85); color: #fff; }
+        .badge-hot-drink { background: rgba(224,82,82,0.85); color: #fff; }
+        .badge-signature { background: rgba(232,184,75,0.85); color: #0c0b09; }
+        .badge-new-drink { background: rgba(92,184,122,0.85); color: #fff; }
+
+        .drink-card-body {
+            padding: 1.2rem 1.3rem 1.4rem;
+        }
+        .drink-card-body h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.35rem;
+        }
+        .drink-card-body p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        .drink-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.6rem;
+        }
+        .drink-price {
+            font-family: 'DM Mono', monospace;
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .drink-price small {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        /* ── HIGHLIGHT ROW (wide card) ── */
+        .drinks-grid-wide {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .drink-card-wide {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            display: flex;
+            transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.3s, box-shadow 0.35s;
+        }
+        .drink-card-wide:hover {
+            transform: translateY(-5px);
+            border-color: var(--border2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+        }
+        .drink-card-wide .drink-card-img {
+            width: 45%; height: auto; flex-shrink: 0;
+        }
+        .drink-card-wide .drink-card-body { padding: 1.4rem; display: flex; flex-direction: column; justify-content: center; }
+
+        @media (max-width: 650px) {
+            .drinks-grid-wide { grid-template-columns: 1fr; }
+            .drink-card-wide { flex-direction: column; }
+            .drink-card-wide .drink-card-img { width: 100%; height: 180px; }
+        }
+
+        /* ── MODAL ── */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            padding: 2.5rem 2rem;
+            width: 100%; max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+        .close {
+            position: absolute; top: 1.25rem; right: 1.25rem;
+            font-size: 1.4rem; color: var(--text-muted); cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close:hover { color: var(--gold); }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%; padding: 0.7rem 0.9rem;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 2px; color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--gold); }
+        .order-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+        .order-type {
+            padding: 0.9rem; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-muted);
+            border-radius: 2px; cursor: pointer;
+            text-align: center; font-size: 0.85rem; transition: all 0.2s;
+        }
+        .order-type:hover { border-color: var(--border2); color: var(--text); }
+        .order-type.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+        .total-section {
+            margin-top: 1rem; padding: 1rem 1.25rem;
+            background: var(--gold-dim); border: 1px solid var(--border2);
+            border-radius: 2px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .total-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+        .total-value { font-family: 'DM Mono', monospace; font-size: 1.15rem; color: var(--gold); font-weight: 500; }
+        .payment-methods { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+        .payment-btn {
+            flex: 1; padding: 0.6rem; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-muted);
+            border-radius: 2px; cursor: pointer;
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            letter-spacing: 0.08em; transition: all 0.2s; text-align: center;
+        }
+        .payment-btn:hover { border-color: var(--border2); color: var(--text); }
+        .payment-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+        .delivery-info {
+            display: none; background: var(--bg);
+            border: 1px solid var(--border); padding: 1.25rem;
+            border-radius: 2px; margin-bottom: 1rem;
+        }
+        .delivery-info h3 {
+            font-size: 0.7rem; font-family: 'DM Mono', monospace;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" style="text-decoration:none;">
+                    <div class="logo">HOẢ <span>NGƯ </span>QUÁN</div>
+                </a>
+                <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="menu.html">MENU</a></li>
+                        <li><a href="drinks.html" style="color: var(--gold);">DRINKS</a></li>
+                        <li><a href="index.html#about">ABOUT</a></li>
+                    </ul>
+                </nav>
+                <div class="contact-info">
+                    <a href="#">📞 0388 611 883</a>
+                    <a href="https://www.facebook.com/profile.php?id=61582296692992">📘 Facebook</a>
+                    <a href="https://zalo.me/0388611883">📱 Zalo</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-tag">Hoả Ngư Quán</div>
+            <h1>Đồ <em>Uống</em></h1>
+            <p>Mát lạnh hay ấm nóng — Đều đúng vị</p>
+        </div>
+    </section>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-inner">
+                <span class="filter-label">Lọc:</span>
+                <button class="filter-btn active" onclick="filterDrinks('all', this)">Tất Cả</button>
+                <button class="filter-btn" onclick="filterDrinks('soft', this)">Nước Ngọt</button>
+                <button class="filter-btn" onclick="filterDrinks('beer', this)">Bia &amp; Rượu</button>
+                <button class="filter-btn" onclick="filterDrinks('juice', this)">Nước Ép</button>
+                <button class="filter-btn" onclick="filterDrinks('hot', this)">Nóng ☕</button>
+                <button class="filter-btn" onclick="filterDrinks('signature', this)">★ Signature</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drinks Content -->
+    <main class="drinks-section">
+        <div class="container">
+
+            <!-- Nước Ngọt & Nước Suối -->
+            <div class="category-block" data-category="soft" id="cat-soft">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">01 — Nước Giải Khát</div>
+                        <div class="category-title">Nước Ngọt <em>&amp; Nước Suối</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="drinks-grid" id="grid-soft"></div>
+            </div>
+
+            <!-- Bia & Rượu -->
+            <div class="category-block" data-category="beer" id="cat-beer">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">02 — Bia &amp; Rượu</div>
+                        <div class="category-title">Bia <em>&amp; Rượu</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="drinks-grid" id="grid-beer"></div>
+            </div>
+
+            <!-- Nước Ép & Sinh Tố -->
+            <div class="category-block" data-category="juice" id="cat-juice">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">03 — Nước Ép</div>
+                        <div class="category-title">Nước Ép <em>&amp; Sinh Tố</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="drinks-grid" id="grid-juice"></div>
+            </div>
+
+            <!-- Nước Nóng -->
+            <div class="category-block" data-category="hot" id="cat-hot">
+                <div class="category-header">
+                    <div class="category-header-line"></div>
+                    <div class="category-title-wrap">
+                        <div class="category-num">04 — Đồ Uống Nóng</div>
+                        <div class="category-title">Trà <em>&amp; Cà Phê</em></div>
+                    </div>
+                    <div class="category-header-line"></div>
+                </div>
+                <div class="drinks-grid" id="grid-hot"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2 id="orderItemTitle">Đặt Đồ Uống</h2>
+
+            <div class="payment-methods">
+                <div class="payment-btn active" onclick="selectPayment('visa', this)">VISA</div>
+                <div class="payment-btn" onclick="selectPayment('atm', this)">ATM</div>
+                <div class="payment-btn" onclick="selectPayment('momo', this)">MOMO</div>
+            </div>
+
+            <div class="order-options">
+                <div class="order-type selected" onclick="selectOrderType('dinein', this)">Tại Bàn</div>
+                <div class="order-type" onclick="selectOrderType('takeout', this)">Mang Về</div>
+            </div>
+
+            <div id="dineinOptions">
+                <div class="form-group">
+                    <label>Chọn Vị Trí Bàn</label>
+                    <select id="tableLocation">
+                        <option>Tầng 1 — Nhìn Ra Cửa Sổ</option>
+                        <option>Tầng 1 — Khu Trung Tâm</option>
+                        <option>Tầng 2 — Ban Công</option>
+                        <option>Phòng VIP</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="takeoutOptions" class="delivery-info">
+                <h3>Thông Tin Giao Hàng</h3>
+                <div class="form-group">
+                    <label>Địa Chỉ Giao Hàng</label>
+                    <input type="text" id="deliveryAddress" placeholder="Nhập địa chỉ...">
+                </div>
+                <div class="form-group">
+                    <label>Số Điện Thoại</label>
+                    <input type="tel" id="deliveryPhone" placeholder="Nhập SĐT...">
+                </div>
+                <div class="form-group">
+                    <label>Thời Gian Giao</label>
+                    <input type="datetime-local" id="deliveryTime">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Số Lượng</label>
+                <input type="number" id="quantity" min="1" value="1" onchange="updateTotal()">
+            </div>
+
+            <div class="form-group">
+                <label>Đơn Giá: <span id="unitPrice" style="color:var(--gold);"></span></label>
+            </div>
+
+            <div class="total-section">
+                <span class="total-label">Tổng Cộng</span>
+                <span class="total-value" id="totalAmount">0 ₫</span>
+            </div>
+
+            <button class="btn" style="width:100%;margin-top:1.25rem;" onclick="placeOrder()">Đặt Ngay</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Hoả Ngư Quán</h3>
+                    <p>📍 Đường Trung Sơn Trầm, Phường Tùng Thiện, Sơn Tây, Hà Nội</p>
+                    <p>📞 Phone: 0388 611 883</p>
+                    <p>🕒 Mở cửa: 09:00 AM - 10:00 PM</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Liên Hệ</h3>
+                    <p>Chủ quán: Anh Hiếu - 0388 611 883</p>
+                    <p>Quản lý: Chị Nga - 0123 456 787</p>
+                    <p>📘 Facebook: /hoanguquan</p>
+                    <p>📱 Zalo: 0388 611 883</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Vị Trí</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2902.8203483249417!2d105.49648662138583!3d21.100072914864064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345f0f44eba78d%3A0x69415b62606a2657!2zSOG7j2EgTmfGsCBRdcOhbg!5e1!3m2!1svi!2s!4v1774167637768!5m2!1svi!2s" width="370" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">© 2025 Hoả Ngư Quán — Tươi từ cá, thơm đến bàn - Design by BachDX</div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+        <a href="order.html" id="cartFab"
+            style="display:none;
+                    position:fixed;
+                    bottom:2rem; right:2rem;
+                    z-index:500;
+                    background:var(--gold);
+                    color:#0c0b09;
+                    border-radius:4px;
+                    padding:0.85rem 1.4rem;
+                    text-decoration:none;
+                    font-family:'DM Mono',monospace;
+                    font-size:0.72rem;
+                    letter-spacing:0.1em;
+                    text-transform:uppercase;
+                    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+                    align-items:center;
+                    gap:1rem;
+                    transition:transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.6)'"
+                onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.5)'">
+                <span style="font-size:1.1rem;">🛒</span>
+            <span>
+        <span id="cartFabCount" style="font-weight:600;">0 món</span><br>
+        <span id="cartFabPrice" style="color:rgba(12,11,9,0.7);font-size:0.65rem;">0 ₫</span>
+    </span>
+    <span style="font-size:0.68rem;opacity:0.7;">→ Đặt Hàng</span>
+</a>
+
+    <script>
+        // ── DATA ──
+        const drinksData = {
+            soft: [
+                { id: 101, name: 'Coca Cola', badge: 'cold', desc: 'Nước ngọt có gas mát lạnh, giải nhiệt tức thì.', price: 15000, unit: '330ml lon', img: '/images/coca.jpg' },
+                { id: 102, name: 'Pepsi', badge: 'cold', desc: 'Pepsi lon mát lạnh, vị ngọt nhẹ đặc trưng.', price: 15000, unit: '330ml lon', img: '/api/placeholder/240/180' },
+                { id: 103, name: 'Nước Suối Aqua', badge: null, desc: 'Nước khoáng tinh khiết, thanh mát tự nhiên.', price: 10000, unit: '500ml', img: '/api/placeholder/240/180' },
+                { id: 104, name: 'Nước Tăng Lực Sting', badge: 'new-drink', desc: 'Sting dâu đỏ, tăng năng lượng cho bữa ăn.', price: 15000, unit: '330ml lon', img: '/api/placeholder/240/180' },
+                { id: 105, name: 'Soda Chanh Muối', badge: 'signature', desc: 'Soda chanh muối đặc biệt của quán, vị chua cay mặn hoà quyện.', price: 25000, unit: '1 ly', img: '/api/placeholder/240/180' },
+            ],
+            beer: [
+                { id: 201, name: 'Bia Hà Nội Lon', badge: 'cold', desc: 'Bia Hà Nội lon lạnh, vị đắng nhẹ, bọt mịn.', price: 20000, unit: '330ml', img: '/api/placeholder/240/180' },
+                { id: 202, name: 'Bia Tiger Lon', badge: 'cold', desc: 'Tiger Ice mát lạnh, hương malt thơm dịu.', price: 22000, unit: '330ml', img: '/api/placeholder/240/180' },
+                { id: 203, name: 'Heineken Chai', badge: null, desc: 'Heineken chai xanh cao cấp, vị cân bằng tinh tế.', price: 30000, unit: '330ml', img: '/api/placeholder/240/180' },
+                { id: 204, name: 'Rượu Nếp Cái Hoa Vàng', badge: 'signature', desc: 'Rượu nếp thủ công truyền thống, thơm ngọt nhẹ, uống kèm hải sản tuyệt hảo.', price: 55000, unit: '100ml', img: '/api/placeholder/240/180' },
+                { id: 205, name: 'Sake Ấm', badge: 'hot-drink', desc: 'Sake Nhật hâm nóng 40°C, uống kèm món cá hấp.', price: 85000, unit: '180ml', img: '/api/placeholder/240/180' },
+            ],
+            juice: [
+                { id: 301, name: 'Nước Chanh Dây Tươi', badge: 'signature', desc: 'Chanh dây ép nguyên chất, ngọt chua tự nhiên, pha đường thốt nốt.', price: 35000, unit: '1 ly lớn', img: '/api/placeholder/240/180' },
+                { id: 302, name: 'Sinh Tố Xoài Sữa', badge: 'new-drink', desc: 'Xoài cát Hòa Lộc xay cùng sữa tươi không đường.', price: 35000, unit: '1 ly', img: '/api/placeholder/240/180' },
+                { id: 303, name: 'Nước Dừa Tươi', badge: 'cold', desc: 'Dừa tươi nguyên trái chặt tại chỗ, ngọt mát thanh.', price: 30000, unit: '1 trái', img: '/api/placeholder/240/180' },
+                { id: 304, name: 'Nước Ép Cam Vắt', badge: null, desc: 'Cam Việt Nam vắt tươi, không đường, giàu vitamin C.', price: 30000, unit: '1 ly', img: '/api/placeholder/240/180' },
+                { id: 305, name: 'Sinh Tố Dâu Tây', badge: null, desc: 'Dâu tây Đà Lạt xay kem, ngọt chua hài hoà, màu sắc bắt mắt.', price: 38000, unit: '1 ly', img: '/api/placeholder/240/180' },
+            ],
+            hot: [
+                { id: 401, name: 'Trà Đá Nhà Quán', badge: null, desc: 'Trà xanh ướp hoa lài pha đá miễn phí, phục vụ không giới hạn.', price: 0, unit: 'Miễn phí', img: '/api/placeholder/240/180' },
+                { id: 402, name: 'Cà Phê Đen Nóng', badge: null, desc: 'Cà phê phin Arabica rang mộc, đậm hương, uống nóng.', price: 25000, unit: '1 phin', img: '/api/placeholder/240/180' },
+                { id: 403, name: 'Trà Hoa Cúc Mật Ong', badge: 'signature', desc: 'Hoa cúc khô pha cùng mật ong rừng, thơm nhẹ, dịu cổ họng.', price: 30000, unit: '1 ấm', img: '/api/placeholder/240/180' },
+                { id: 404, name: 'Cà Phê Sữa Đá', badge: 'cold', desc: 'Cà phê phin pha đặc, sữa đặc ngọt, đá viên tan từ từ.', price: 30000, unit: '1 ly', img: '/api/placeholder/240/180' },
+            ]
+        };
+
+        let currentItem = null;
+        let currentPayment = 'visa';
+        let currentOrderType = 'dinein';
+
+        function formatPrice(p) {
+            if (p === 0) return 'Miễn phí';
+            return p.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        const badgeMap = { cold: 'badge-cold', 'hot-drink': 'badge-hot-drink', signature: 'badge-signature', 'new-drink': 'badge-new-drink' };
+        const badgeLabel = { cold: '❄ Lạnh', 'hot-drink': '♨ Nóng', signature: '★ Signature', 'new-drink': '✦ Mới' };
+
+        // ── CART SYSTEM ──
+let cart = [];
+function loadCartFromStorage() {
+    try { cart = JSON.parse(localStorage.getItem('hnq_cart') || '[]'); } catch(e) { cart = []; }
+    updateFloatingCart();
+}
+function saveCartToStorage() {
+    localStorage.setItem('hnq_cart', JSON.stringify(cart));
+    updateFloatingCart();
+}
+function addToCart(item) {
+    if (item.price === 0) return;
+    const existing = cart.find(c => c.id === item.id);
+    if (existing) { existing.qty += 1; }
+    else { cart.push({ id: item.id, name: item.name, price: item.price, unit: item.unit, img: item.img, type: 'drink', qty: 1, note: '' }); }
+    saveCartToStorage();
+    showAddFeedback(item.id);
+}
+function updateFloatingCart() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const fab = document.getElementById('cartFab');
+    if (!fab) return;
+    if (total > 0) {
+        fab.style.display = 'flex';
+        document.getElementById('cartFabCount').textContent = total + ' món';
+        document.getElementById('cartFabPrice').textContent = totalPrice.toLocaleString('vi-VN') + ' ₫';
+    } else { fab.style.display = 'none'; }
+}
+function showAddFeedback(id) {
+    const btn = document.querySelector(`[data-add-id="${id}"]`);
+    if (!btn) return;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Đã thêm';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+}
+
+function renderDrink(item) {
+    const badge = item.badge
+        ? `<span class="drink-badge ${badgeMap[item.badge]}">${badgeLabel[item.badge]}</span>` : '';
+
+    const actionBtns = item.price === 0
+        ? `<span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--green);letter-spacing:0.1em;">✓ Có sẵn</span>`
+        : `<div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+            <button class="btn"
+                style="background:transparent;border:1px solid var(--border2);color:var(--gold);padding:0.5rem 0.8rem;font-size:0.65rem;"
+                data-add-id="${item.id}"
+                onclick="addToCart(Object.values(drinksData).flat().find(i=>i.id===${item.id}))">
+                + Thêm Giỏ
+            </button>
+            <a href="order.html" class="btn" style="padding:0.5rem 0.8rem;font-size:0.65rem;">Đặt Ngay</a>
+        </div>`;
+
+    return `
+    <div class="drink-card" data-id="${item.id}">
+        <div class="drink-card-img">
+            ${badge}
+            <img src="${item.img}" alt="${item.name}" onerror="this.src='/api/placeholder/240/180'">
+        </div>
+        <div class="drink-card-body">
+            <h3>${item.name}</h3>
+            <p>${item.desc}</p>
+            <div class="drink-card-footer">
+                <div class="drink-price">
+                    ${formatPrice(item.price)}
+                    <small>${item.unit}</small>
+                </div>
+                ${actionBtns}
+            </div>
+        </div>
+    </div>`;
+}
+
+        function renderAll() {
+            ['soft','beer','juice','hot'].forEach(cat => {
+                document.getElementById('grid-' + cat).innerHTML =
+                    drinksData[cat].map(renderDrink).join('');
+            });
+        }
+
+        function filterDrinks(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const blocks = document.querySelectorAll('.category-block');
+            if (cat === 'all') {
+                blocks.forEach(b => {
+                    b.style.display = 'block';
+                    const key = b.id.replace('cat-','');
+                    document.getElementById('grid-' + key).innerHTML = drinksData[key].map(renderDrink).join('');
+                });
+            } else if (cat === 'signature') {
+                blocks.forEach(b => {
+                    b.style.display = 'block';
+                    const key = b.id.replace('cat-','');
+                    const filtered = drinksData[key].filter(i => i.badge === 'signature');
+                    document.getElementById('grid-' + key).innerHTML = filtered.length
+                        ? filtered.map(renderDrink).join('')
+                        : '<div style="text-align:center;padding:2rem;color:var(--text-muted);font-family:DM Mono,monospace;font-size:0.78rem;">—</div>';
+                });
+            } else {
+                blocks.forEach(b => {
+                    b.style.display = b.dataset.category === cat ? 'block' : 'none';
+                });
+            }
+        }
+
+        function openOrder(id) {
+            const allItems = Object.values(drinksData).flat();
+            currentItem = allItems.find(i => i.id === id);
+            if (!currentItem || currentItem.price === 0) return;
+            document.getElementById('orderItemTitle').textContent = currentItem.name;
+            document.getElementById('unitPrice').textContent = formatPrice(currentItem.price);
+            document.getElementById('quantity').value = 1;
+            updateTotal();
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+        }
+
+        function updateTotal() {
+            if (!currentItem) return;
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            document.getElementById('totalAmount').textContent = formatPrice(currentItem.price * qty);
+        }
+
+        function selectPayment(method, el) {
+            document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentPayment = method;
+        }
+
+        function selectOrderType(type, el) {
+            document.querySelectorAll('.order-type').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            currentOrderType = type;
+            document.getElementById('dineinOptions').style.display = type === 'dinein' ? 'block' : 'none';
+            document.getElementById('takeoutOptions').style.display = type === 'takeout' ? 'block' : 'none';
+        }
+
+        function placeOrder() {
+            if (!currentItem) return;
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            const total = currentItem.price * qty;
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push({
+                id: Date.now(),
+                item: currentItem.name,
+                quantity: qty,
+                total: total,
+                type: currentOrderType,
+                payment: currentPayment,
+                status: 'pending',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('orders', JSON.stringify(orders));
+            closeOrderModal();
+            alert(`✅ Đặt thành công!\n${currentItem.name} x${qty}\nTổng: ${formatPrice(total)}`);
+        }
+
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) closeOrderModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => { loadCartFromStorage(); renderAll(); });
+    </script>
+    <script>
+function toggleMenu() {
+    const nav = document.querySelector('nav');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+// Đóng menu khi click vào link
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('nav').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
+</body>
+</html>

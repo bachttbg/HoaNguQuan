@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Hàng - Hoả Ngư Quán</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <style>
+        /* ── PAGE HERO ── */
+        .order-hero {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 0 2.5rem;
+            text-align: center;
+        }
+        .order-hero-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .order-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--text);
+        }
+        .order-hero h1 em { color: var(--gold); font-style: italic; }
+        .order-hero p { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; }
+
+        /* ── LAYOUT ── */
+        .order-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            padding: 3rem 0 5rem;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .order-layout { grid-template-columns: 1fr; }
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-cart {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+        .empty-cart h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .empty-cart p { font-size: 0.84rem; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 2rem; letter-spacing: 0.06em; }
+
+        /* ── CART ITEMS ── */
+        .cart-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .cart-panel-header {
+            padding: 1.4rem 1.6rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cart-panel-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--text);
+        }
+        .cart-count-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            background: var(--gold-dim);
+            border: 1px solid var(--border2);
+            color: var(--gold);
+            padding: 0.2rem 0.65rem;
+            border-radius: 2px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 72px 1fr auto;
+            gap: 1rem;
+            padding: 1.25rem 1.6rem;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item:hover { background: var(--bg); }
+
+        .cart-item-img {
+            width: 72px; height: 56px;
+            border-radius: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cart-item-info h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.2rem;
+            line-height: 1.2;
+        }
+        .cart-item-meta {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            margin-bottom: 0.5rem;
+        }
+        .cart-item-note {
+            width: 100%;
+            padding: 0.4rem 0.65rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.78rem;
+            transition: border-color 0.2s;
+            margin-top: 0.4rem;
+        }
+        .cart-item-note:focus { outline: none; border-color: var(--gold); color: var(--text); }
+        .cart-item-note::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+        .cart-item-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.6rem;
+        }
+        .cart-item-price {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--gold);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .qty-btn {
+            width: 30px; height: 30px;
+            background: var(--bg);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .qty-btn:hover { background: var(--gold-dim); color: var(--gold); }
+        .qty-display {
+            width: 36px;
+            text-align: center;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text);
+            background: var(--surface);
+            border: none;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            padding: 0 4px;
+            line-height: 30px;
+        }
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .remove-btn:hover { color: var(--red); }
+
+        /* ── SOURCE TAG ── */
+        .source-tag {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.5rem;
+            border-radius: 2px;
+            margin-right: 0.4rem;
+        }
+        .src-food { background: rgba(232,184,75,0.12); color: var(--gold); border: 1px solid rgba(232,184,75,0.25); }
+        .src-drink { background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.25); }
+
+        /* ── CHECKOUT PANEL ── */
+        .checkout-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 1.75rem 1.6rem;
+            position: sticky;
+            top: 90px;
+        }
+        .checkout-panel h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Order Type */
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.65rem;
+            display: block;
+        }
+        .order-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1.4rem;
+        }
+        .otype-btn {
+            padding: 0.85rem 0.6rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            border-radius: 2px;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .otype-btn span { display: block; font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .otype-btn:hover { border-color: var(--border2); color: var(--text); }
+        .otype-btn.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+
+        /* Delivery fields */
+        .delivery-fields {
+            display: none;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 1.1rem;
+            border-radius: 2px;
+            margin-bottom: 1.25rem;
+        }
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--gold); }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+        /* Table select */
+        .table-select { margin-bottom: 1.25rem; }
+
+        /* Payment */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .pay-btn {
+            padding: 0.7rem 0.4rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            border-radius: 2px;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .pay-btn span { display: block; font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .pay-btn:hover { border-color: var(--border2); color: var(--text); }
+        .pay-btn.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+
+        /* Summary */
+        .order-summary {
+            border-top: 1px solid var(--border);
+            padding-top: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.82rem;
+        }
+        .summary-row .label { color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.06em; }
+        .summary-row .val { color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+        .summary-row.total-row { border-top: 1px solid var(--border2); padding-top: 0.85rem; margin-top: 0.5rem; }
+        .summary-row.total-row .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; }
+        .summary-row.total-row .val { font-size: 1.25rem; color: var(--gold); font-weight: 500; }
+
+        /* CTA */
+        .btn-place-order {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gold);
+            color: #0c0b09;
+            border: none;
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+        .btn-place-order:hover { background: var(--gold-light); transform: translateY(-1px); }
+        .btn-place-order:active { transform: translateY(0); }
+        .btn-place-order:disabled { background: var(--surface2); color: var(--text-muted); cursor: not-allowed; transform: none; }
+
+        .btn-clear-cart {
+            width: 100%;
+            margin-top: 0.6rem;
+            padding: 0.6rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-clear-cart:hover { border-color: var(--red); color: var(--red); }
+
+        /* ── SUCCESS SCREEN ── */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 5rem 2rem;
+            grid-column: 1 / -1;
+        }
+        .success-icon { font-size: 3.5rem; margin-bottom: 1.5rem; animation: popIn 0.5s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes popIn { from { opacity:0; transform: scale(0.5); } to { opacity:1; transform: scale(1); } }
+        .success-screen h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        .success-screen h2 em { color: var(--gold); font-style: italic; }
+        .success-screen p { font-size: 0.85rem; color: var(--text-muted); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; line-height: 1.7; margin-bottom: 0.4rem; }
+        .order-id-box {
+            display: inline-block;
+            margin: 1.5rem 0;
+            padding: 0.75rem 2rem;
+            background: var(--gold-dim);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .success-actions { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+
+        /* ── BACK LINK ── */
+        .back-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .back-link {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 0.45rem 1rem;
+            border-radius: 2px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .back-link:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* ── QR MODAL ── */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; align-items: center; justify-content: center; -webkit-backdrop-filter: blur(5px); }
+        .modal.active { display: flex; }
+        .modal-inner {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            padding: 2.5rem 2rem;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .modal-inner h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem; }
+        .modal-inner p { font-size: 0.8rem; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; letter-spacing: 0.06em; }
+        .qr-box { background: white; border-radius: 2px; padding: 1rem; display: inline-block; margin-bottom: 1rem; }
+        .qr-box img { width: 160px; height: 160px; display: block; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer; transition: color 0.2s; }
+        .modal-close:hover { color: var(--gold); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" style="text-decoration:none;">
+                    <div class="logo">HOẢ <span>NGƯ </span>QUÁN</div>
+                </a>
+                <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="menu.html">MENU</a></li>
+                        <li><a href="drinks.html">DRINKS</a></li>
+                        <li><a href="index.html#about">ABOUT</a></li>
+                        <li><a href="order.html" style="color:var(--gold);">ORDER</a></li>
+                    </ul>
+                </nav>
+                <div class="contact-info">
+                    <a href="#">📞 0388 611 883</a>
+                    <a href="https://www.facebook.com/profile.php?id=61582296692992">📘 Facebook</a>
+                    <a href="https://zalo.me/0388611883">📱 Zalo</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="order-hero">
+        <span class="order-hero-tag">Hoả Ngư Quán</span>
+        <h1>Giỏ <em>Đặt Hàng</em></h1>
+        <p>Kiểm tra và xác nhận các món bạn đã chọn</p>
+    </section>
+
+    <main>
+        <div class="container">
+            <div style="padding-top:2.5rem;">
+                <div class="back-links">
+                    <a href="menu.html" class="back-link">← Thực Đơn</a>
+                    <a href="drinks.html" class="back-link">← Đồ Uống</a>
+                </div>
+            </div>
+
+            <!-- Success screen -->
+            <div class="success-screen" id="successScreen">
+                <div class="success-icon">🎉</div>
+                <h2>Đặt Hàng <em>Thành Công!</em></h2>
+                <p>Cảm ơn bạn đã tin tưởng Hoả Ngư Quán.</p>
+                <p>Chúng tôi sẽ chuẩn bị món ngay cho bạn.</p>
+                <div class="order-id-box" id="orderIdBox">MÃ ĐƠN: #HNQ-000000</div>
+                <div class="success-actions">
+                    <a href="menu.html" class="btn">Thêm Món Khác</a>
+                    <a href="index.html" class="btn" style="background:transparent;border:1px solid var(--border);color:var(--text-muted);">Về Trang Chủ</a>
+                </div>
+            </div>
+
+            <!-- Order layout -->
+            <div class="order-layout" id="orderLayout">
+                <!-- LEFT: Cart Items -->
+                <div id="cartSection">
+                    <!-- Empty state -->
+                    <div class="empty-cart" id="emptyCart" style="display:none;">
+                        <div class="empty-cart-icon">🧺</div>
+                        <h2>Giỏ hàng trống</h2>
+                        <p>Bạn chưa chọn món nào.<br>Hãy quay lại menu để chọn nhé!</p>
+                        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                            <a href="menu.html" class="btn">Xem Thực Đơn</a>
+                            <a href="drinks.html" class="btn" style="background:transparent;border:1px solid var(--border2);color:var(--gold);">Xem Đồ Uống</a>
+                        </div>
+                    </div>
+
+                    <!-- Cart items panel -->
+                    <div class="cart-panel" id="cartPanel">
+                        <div class="cart-panel-header">
+                            <h2>Các Món Đã Chọn</h2>
+                            <span class="cart-count-badge" id="cartCountBadge">0 món</span>
+                        </div>
+                        <div id="cartItems">
+                            <!-- rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Checkout -->
+                <div class="checkout-panel" id="checkoutPanel">
+                    <h2>Thông Tin Đặt Hàng</h2>
+
+                    <!-- Order type -->
+                    <span class="section-label">Hình thức</span>
+                    <div class="order-type-grid">
+                        <div class="otype-btn active" id="otype-dinein" onclick="setOrderType('dinein')">
+                            <span>🍽</span>Tại Bàn
+                        </div>
+                        <div class="otype-btn" id="otype-takeout" onclick="setOrderType('takeout')">
+                            <span>🛵</span>Mang Về
+                        </div>
+                    </div>
+
+                    <!-- Dine-in: table -->
+                    <div id="dineinFields" class="table-select">
+                        <div class="form-group">
+                            <label>Chọn Bàn / Khu Vực</label>
+                            <select id="tableSelect">
+                                <option value="">— Chọn vị trí bàn —</option>
+                                <option>Dãy bàn ngoài — Nhìn Ra Cửa chính</option>
+                                <option>Dãy bàn trong — Khu Trung Tâm</option>
+                                <option>Dãy gần màn hình LED</option>
+                                <option>Phòng VIP 1</option>
+                                <option>Phòng VIP 2</option>
+                                <option>Phòng VIP 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Số Khách</label>
+                            <input type="number" id="guestCount" min="1" max="30" value="2" placeholder="Số lượng khách...">
+                        </div>
+                    </div>
+
+                    <!-- Takeout: address -->
+                    <div id="takeoutFields" class="delivery-fields">
+                        <div class="form-group">
+                            <label>Địa Chỉ Giao Hàng</label>
+                            <input type="text" id="deliveryAddr" placeholder="Số nhà, đường, phường...">
+                        </div>
+                        <div class="form-group">
+                            <label>Số Điện Thoại</label>
+                            <input type="tel" id="deliveryTel" placeholder="0xxx xxx xxx">
+                        </div>
+                        <div class="form-group">
+                            <label>Thời Gian Nhận</label>
+                            <input type="datetime-local" id="deliveryTime">
+                        </div>
+                    </div>
+
+                    <!-- Customer name -->
+                    <div class="form-group" style="margin-bottom:1.25rem;">
+                        <label>Tên Khách Hàng</label>
+                        <input type="text" id="customerName" placeholder="Nhập tên của bạn...">
+                    </div>
+
+                    <!-- Note -->
+                    <div class="form-group" style="margin-bottom:1.4rem;">
+                        <label>Ghi Chú Chung</label>
+                        <textarea id="orderNote" placeholder="Yêu cầu đặc biệt, dị ứng thức ăn..."></textarea>
+                    </div>
+
+                    <!-- Payment -->
+                    <span class="section-label">Thanh toán</span>
+                    <div class="payment-grid">
+                        <div class="pay-btn active" id="pay-visa" onclick="setPayment('visa')">
+                            <span>💳</span>VISA
+                        </div>
+                        <div class="pay-btn" id="pay-atm" onclick="setPayment('atm')">
+                            <span>🏧</span>ATM
+                        </div>
+                        <div class="pay-btn" id="pay-momo" onclick="setPayment('momo')">
+                            <span>📱</span>MOMO
+                        </div>
+                        <div class="pay-btn" id="pay-cash" onclick="setPayment('cash')">
+                            <span>💵</span>Tiền Mặt
+                        </div>
+                        <div class="pay-btn" id="pay-zalopay" onclick="setPayment('zalopay')">
+                            <span>⚡</span>ZaloPay
+                        </div>
+                        <div class="pay-btn" id="pay-bank" onclick="setPayment('bank')">
+                            <span>🏦</span>Chuyển Khoản
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span class="label">Tạm tính</span>
+                            <span class="val" id="subtotalVal">0 ₫</span>
+                        </div>
+                        <div class="summary-row" id="deliveryRow" style="display:none;">
+                            <span class="label">Phí giao hàng</span>
+                            <span class="val" id="deliveryFeeVal">15.000 ₫</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span class="label">Tổng Cộng</span>
+                            <span class="val" id="grandTotalVal">0 ₫</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-place-order" id="placeOrderBtn" onclick="placeOrder()">
+                        ✓ &nbsp;Xác Nhận Đặt Hàng
+                    </button>
+                    <button class="btn-clear-cart" onclick="clearCart()">Xoá Giỏ Hàng</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- QR Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-inner">
+            <button class="modal-close" onclick="closeQr()">✕</button>
+            <h3>Quét Mã QR</h3>
+            <p id="qrInstruction">Mở ứng dụng MOMO và quét mã để thanh toán</p>
+            <div class="qr-box">
+                <img src="/api/placeholder/160/160" alt="QR Code" id="qrImg">
+            </div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--gold);" id="qrAmount">Số tiền: 0 ₫</p>
+            <button class="btn" style="width:100%;margin-top:1rem;" onclick="confirmQrPaid()">Đã Thanh Toán</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Hoả Ngư Quán</h3>
+                    <p>📍 Đường Trung Sơn Trầm, Phường Tùng Thiện, Sơn Tây, Hà Nội</p>
+                    <p>📞 Phone: 0388 611 883</p>
+                    <p>🕒 Mở cửa: 09:00 AM - 10:00 PM</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Liên Hệ</h3>
+                    <p>Quản lý: Anh Hiếu - 0388 611 883</p>
+                    <p>Chủ quán: Chị Nga - 0123 456 787</p>
+                    <p>📘 Facebook: /hoanguquan</p>
+                    <p>📱 Zalo: 0388 611 883</p>
+                </div>
+                <div class="footer-info">
+                    <h3>Vị Trí</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2902.8203483249417!2d105.49648662138583!3d21.100072914864064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345f0f44eba78d%3A0x69415b62606a2657!2zSOG7j2EgTmfGsCBRdcOhbg!5e1!3m2!1svi!2s!4v1774167637768!5m2!1svi!2s" width="370" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">© 2025 Hoả Ngư Quán — Tươi từ biển, thơm đến bàn - Design by BachDX</div>
+        </div>
+    </footer>
+
+    <script>
+        const DELIVERY_FEE = 15000;
+        let cart = [];
+        let orderType = 'dinein';
+        let payment = 'visa';
+
+        // ── LOAD CART ──
+        function loadCart() {
+            try {
+                cart = JSON.parse(localStorage.getItem('hnq_cart') || '[]');
+            } catch(e) { cart = []; }
+            renderCart();
+        }
+
+        function saveCart() {
+            localStorage.setItem('hnq_cart', JSON.stringify(cart));
+            updateCartBadgeGlobal();
+        }
+
+        // ── RENDER ──
+        function fmt(n) {
+            if (n === 0) return 'Miễn phí';
+            return n.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        function renderCart() {
+            const isEmpty = cart.length === 0;
+            document.getElementById('emptyCart').style.display = isEmpty ? 'block' : 'none';
+            document.getElementById('cartPanel').style.display = isEmpty ? 'none' : 'block';
+            document.getElementById('checkoutPanel').style.display = isEmpty ? 'none' : 'block';
+            document.getElementById('cartCountBadge').textContent = cart.length + ' món';
+
+            if (!isEmpty) {
+                document.getElementById('cartItems').innerHTML = cart.map((item, idx) => `
+                    <div class="cart-item" id="cartitem-${idx}">
+                        <div class="cart-item-img">
+                            <img src="${item.img}" alt="${item.name}" onerror="this.src='/api/placeholder/72/56'">
+                        </div>
+                        <div class="cart-item-info">
+                            <h3>${item.name}</h3>
+                            <div class="cart-item-meta">
+                                <span class="source-tag ${item.type === 'food' ? 'src-food' : 'src-drink'}">${item.type === 'food' ? '🍽 Món ăn' : '🥤 Đồ uống'}</span>
+                                ${item.unit}
+                            </div>
+                            <input class="cart-item-note" type="text" placeholder="Ghi chú cho món này..." value="${item.note || ''}" onchange="updateNote(${idx}, this.value)">
+                        </div>
+                        <div class="cart-item-controls">
+                            <span class="cart-item-price">${fmt(item.price * item.qty)}</span>
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+                                <span class="qty-display">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="removeItem(${idx})">✕ Xoá</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const fee = orderType === 'takeout' ? DELIVERY_FEE : 0;
+            const grand = subtotal + fee;
+            document.getElementById('subtotalVal').textContent = fmt(subtotal);
+            document.getElementById('grandTotalVal').textContent = fmt(grand);
+            document.getElementById('deliveryRow').style.display = orderType === 'takeout' ? 'flex' : 'none';
+            document.getElementById('placeOrderBtn').disabled = cart.length === 0;
+        }
+
+        // ── CART ACTIONS ──
+        function changeQty(idx, delta) {
+            cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+            saveCart(); renderCart();
+        }
+
+        function removeItem(idx) {
+            cart.splice(idx, 1);
+            saveCart(); renderCart();
+        }
+
+        function updateNote(idx, val) {
+            cart[idx].note = val;
+            saveCart();
+        }
+
+        function clearCart() {
+            if (!confirm('Xoá toàn bộ giỏ hàng?')) return;
+            cart = [];
+            saveCart(); renderCart();
+        }
+
+        // ── ORDER TYPE ──
+        function setOrderType(type) {
+            orderType = type;
+            document.getElementById('otype-dinein').classList.toggle('active', type === 'dinein');
+            document.getElementById('otype-takeout').classList.toggle('active', type === 'takeout');
+            document.getElementById('dineinFields').style.display = type === 'dinein' ? 'block' : 'none';
+            document.getElementById('takeoutFields').style.display = type === 'takeout' ? 'block' : 'none';
+            updateSummary();
+        }
+
+        // ── PAYMENT ──
+        function setPayment(p) {
+            payment = p;
+            document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('pay-' + p).classList.add('active');
+        }
+
+        // ── PLACE ORDER ──
+        function placeOrder() {
+            if (cart.length === 0) return;
+
+            const name = document.getElementById('customerName').value.trim();
+            if (!name) { alert('Vui lòng nhập tên khách hàng.'); document.getElementById('customerName').focus(); return; }
+
+            if (orderType === 'dinein') {
+                const table = document.getElementById('tableSelect').value;
+                if (!table) { alert('Vui lòng chọn bàn.'); document.getElementById('tableSelect').focus(); return; }
+            } else {
+                const addr = document.getElementById('deliveryAddr').value.trim();
+                const tel = document.getElementById('deliveryTel').value.trim();
+                if (!addr || !tel) { alert('Vui lòng nhập địa chỉ và số điện thoại giao hàng.'); return; }
+            }
+
+            // QR payment flow
+            if (payment === 'momo' || payment === 'zalopay' || payment === 'bank') {
+                showQrModal(); return;
+            }
+
+            finalizeOrder();
+        }
+
+        function showQrModal() {
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const fee = orderType === 'takeout' ? DELIVERY_FEE : 0;
+            const grand = subtotal + fee;
+            const labels = { momo: 'MOMO', zalopay: 'ZaloPay', bank: 'Ngân hàng' };
+            document.getElementById('qrInstruction').textContent = `Mở ứng dụng ${labels[payment] || payment} và quét mã để thanh toán`;
+            document.getElementById('qrAmount').textContent = 'Số tiền: ' + fmt(grand);
+            document.getElementById('qrModal').classList.add('active');
+        }
+
+        function closeQr() {
+            document.getElementById('qrModal').classList.remove('active');
+        }
+
+        function confirmQrPaid() {
+            closeQr();
+            finalizeOrder();
+        }
+
+        async function finalizeOrder() {
+    const btn = document.getElementById('placeOrderBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Đang gửi đơn...';
+
+    try {
+        const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const fee      = orderType === 'takeout' ? DELIVERY_FEE : 0;
+
+        // Chuẩn bị payload cho API
+        // Lấy thông tin khách từ session
+        let _session = null;
+        try { _session = JSON.parse(localStorage.getItem('hnq_session') || 'null'); } catch(e) {}
+
+        const orderPayload = {
+            customerId:      _session?.customerId || null,
+            customerName:    document.getElementById('customerName').value.trim() || _session?.name || '',
+            customerPhone:   orderType === 'takeout'
+                                ? document.getElementById('deliveryTel').value.trim()
+                                : '',
+            orderType,
+            paymentMethod:   payment,
+            tableLocation:   orderType === 'dinein'
+                                ? document.getElementById('tableSelect').value
+                                : null,
+            guestCount:      orderType === 'dinein'
+                                ? document.getElementById('guestCount').value
+                                : null,
+            deliveryAddress: orderType === 'takeout'
+                                ? document.getElementById('deliveryAddr').value.trim()
+                                : null,
+            deliveryPhone:   orderType === 'takeout'
+                                ? document.getElementById('deliveryTel').value.trim()
+                                : null,
+            note: document.getElementById('orderNote').value,
+
+            // Map cart items sang format API
+            items: cart.map(i => ({
+                legacyId: i.id,         // id gốc từ menuData / drinksData
+                name:     i.name,
+                qty:      i.qty,
+                price:    i.price,
+                note:     i.note || ''
+            }))
+        };
+
+        // Gửi lên server → SQL Server
+        const result = await submitOrderToDB(orderPayload);
+
+        // Xoá giỏ hàng
+        cart = [];
+        localStorage.removeItem('hnq_cart');
+        updateCartBadgeGlobal();
+
+        // Hiển thị màn hình thành công
+        document.getElementById('orderLayout').style.display = 'none';
+        document.getElementById('orderIdBox').textContent = 'MÃ ĐƠN: #' + result.orderId;
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (e) {
+        alert('❌ Không thể đặt hàng: ' + e.message + '\nVui lòng thử lại.');
+        btn.disabled = false;
+        btn.textContent = '✓  Xác Nhận Đặt Hàng';
+    }
+}
+
+        // Global badge updater (for nav cart icon if present)
+        function updateCartBadgeGlobal() {
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            document.querySelectorAll('.cart-global-badge').forEach(el => {
+                el.textContent = count;
+                el.style.display = count > 0 ? 'inline-flex' : 'none';
+            });
+        }
+
+        // ── INIT ──
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
+            // Set default delivery time to now + 30min
+            const dt = new Date(Date.now() + 30 * 60000);
+            const pad = n => String(n).padStart(2,'0');
+            document.getElementById('deliveryTime').value =
+                `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+        });
+    </script>
+    <script>
+function toggleMenu() {
+    const nav = document.querySelector('nav');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+
+// Đóng menu khi click vào link
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('nav').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+    });
+});
+</script>
+const API = 'http://localhost:3000/api';
+
+// ── Helper gọi API ──
+async function apiFetch(path, options = {}) {
+    try {
+        const res  = await fetch(API + path, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options,
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Lỗi server');
+        return data.data;
+    } catch (e) {
+        console.error('API Error:', e.message);
+        throw e;
+    }
+}
+
+// ============================================================
+//  MENU — tải thực đơn từ database thay vì hardcode trong JS
+// ============================================================
+async function loadMenuFromDB() {
+    try {
+        const data = await apiFetch('/menu');
+        // Gán vào biến menuData toàn cục (dùng trong menu.html)
+        if (typeof menuData !== 'undefined') {
+            Object.assign(menuData, data);
+        }
+        return data;
+    } catch (e) {
+        console.warn('Không tải được thực đơn từ DB, dùng dữ liệu tĩnh.');
+    }
+}
+
+async function loadDrinksFromDB() {
+    try {
+        const data = await apiFetch('/drinks');
+        if (typeof drinksData !== 'undefined') {
+            Object.assign(drinksData, data);
+        }
+        return data;
+    } catch (e) {
+        console.warn('Không tải được đồ uống từ DB, dùng dữ liệu tĩnh.');
+    }
+}
+
+// ============================================================
+//  CART — vẫn dùng localStorage nhưng gắn legacyId đúng
+// ============================================================
+function getCart() {
+    try { return JSON.parse(localStorage.getItem('hnq_cart') || '[]'); }
+    catch(e) { return []; }
+}
+function saveCartLocal(cart) {
+    localStorage.setItem('hnq_cart', JSON.stringify(cart));
+}
+
+// ============================================================
+//  ORDER — gửi đơn hàng lên database
+// ============================================================
+async function submitOrderToDB(orderData) {
+    /*  orderData shape (từ order.html finalizeOrder):
+        {
+            customerName, customerPhone,
+            orderType,    paymentMethod,
+            tableLocation, guestCount,
+            deliveryAddress, deliveryPhone,
+            note,
+            items: [{ legacyId, name, qty, price, note }]
+        }
+    */
+    const result = await apiFetch('/orders', {
+        method: 'POST',
+        body:   JSON.stringify(orderData),
+    });
+    return result;   // { orderId: 'HNQ-000001', totalAmount: ... }
+}
+
+// ============================================================
+//  RESERVATIONS — gửi đặt bàn lên database
+// ============================================================
+async function submitReservationToDB(resData) {
+    return apiFetch('/reservations', {
+        method: 'POST',
+        body:   JSON.stringify(resData),
+    });
+}
+
+// ============================================================
+//  MANAGER — lấy đơn hàng & đặt bàn từ database
+// ============================================================
+async function fetchOrdersFromDB(status = 'all') {
+    return apiFetch(`/orders?status=${status}&limit=200`);
+}
+
+async function fetchReservationsFromDB() {
+    return apiFetch('/reservations');
+}
+
+async function updateOrderStatusDB(dbOrderId, newStatus) {
+    return apiFetch(`/orders/${dbOrderId}/status`, {
+        method: 'PATCH',
+        body:   JSON.stringify({ status: newStatus }),
+    });
+}
+
+async function updateReservationStatusDB(id, newStatus) {
+    return apiFetch(`/reservations/${id}/status`, {
+        method: 'PATCH',
+        body:   JSON.stringify({ status: newStatus }),
+    });
+}
+
+async function fetchStatsFromDB() {
+    return apiFetch('/stats');
+}
+
+async function loginWithDB(username, password) {
+    return apiFetch('/login', {
+        method: 'POST',
+        body:   JSON.stringify({ username, password }),
+    });
+}
+
+// ============================================================
+//  MAP trạng thái manager.html → SQL Server
+// ============================================================
+const STATUS_MAP = {
+    // manager.html  →  SQL Server
+    'confirmed':  'confirmed',
+    'preparing':  'preparing',
+    'done':       'completed',
+    'cancelled':  'cancelled',
+};
+const STATUS_REVERSE = {
+    'confirmed':  'confirmed',
+    'preparing':  'preparing',
+    'completed':  'done',
+    'cancelled':  'cancelled',
+    'pending':    'pending',
+};
+
+console.log('%c[HNQ API Client] ✓ Loaded', 'color:#e8b84b;font-weight:bold');
+<script src="api-client.js"></script>
+</body>
+</html>
